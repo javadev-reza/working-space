@@ -7,4 +7,4 @@
 ╚═╝     ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝ ╚═════╝╚══════╝
 ______________________________________________________________________________________________________________________________________________________
                                                                                                                                                         
-${AnsiColor.BRIGHT_RED}:: Micro Service on Spring Boot ${spring-boot.version} : reza@mediawave.biz ::${AnsiStyle.NORMAL}
+${AnsiColor.BRIGHT_RED}:: Micro Service on Spring Boot ${spring-boot.version} : javadevreza@gmail.com ::${AnsiStyle.NORMAL}
