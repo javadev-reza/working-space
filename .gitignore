@@ -1,0 +1,12 @@
+/cloud-server-config/target/
+/cloud-server-discovery/target/
+/cloud-server-gateway/target/
+/core-database-adapter/target/
+/core-service-library/target/
+/core-service-model/target/
+/core-web-security/target/
+/micro-service-authentication/target/
+/micro-service-master/target/
+.idea
+*.log
+*.iml
