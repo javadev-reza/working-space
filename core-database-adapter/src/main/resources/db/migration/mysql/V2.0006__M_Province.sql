@@ -1,0 +1,38 @@
+ALTER TABLE M_Province;
+
+insert into M_Province (id,statusEnabled,description,countryId,province) values(1,true,'-',1,'Aceh');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(2,true,'-',1,'Sumatera Utara');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(3,true,'-',1,'Sumatera Barat');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(4,true,'-',1,'Riau');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(5,true,'-',1,'Jambi');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(6,true,'-',1,'Sumatera Selatan');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(7,true,'-',1,'Bengkulu');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(8,true,'-',1,'Lampung');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(9,true,'-',1,'Bangka Belitung');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(10,true,'-',1,'Kepulauan Riau');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(11,true,'-',1,'Jakarta');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(12,true,'-',1,'Jawa Barat');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(13,true,'-',1,'Jawa Tengah');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(14,true,'-',1,'Yogyakarta');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(15,true,'-',1,'Jawa Timur');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(16,true,'-',1,'Banten');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(17,true,'-',1,'Bali');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(18,true,'-',1,'Nusa Tenggara Barat');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(19,true,'-',1,'Nusa Tenggara Timur');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(20,true,'-',1,'Kalimantan Barat');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(21,true,'-',1,'Kalimantan Tengah');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(22,true,'-',1,'Kalimantan Selatan');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(23,true,'-',1,'Kalimantan Timur');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(24,true,'-',1,'Kalimantan Utara');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(25,true,'-',1,'Sulawesi Utara');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(26,true,'-',1,'Sulawesi Tengah');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(27,true,'-',1,'Sulawesi Selatan');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(28,true,'-',1,'Sulawesi Tenggara');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(29,true,'-',1,'Gorontalo');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(30,true,'-',1,'Sulawesi Barat');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(31,true,'-',1,'Maluku');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(32,true,'-',1,'Maluku Utara');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(33,true,'-',1,'Papua');
+insert into M_Province (id,statusEnabled,description,countryId,province) values(34,true,'-',1,'Papua Barat');
+
+ALTER TABLE M_Province;

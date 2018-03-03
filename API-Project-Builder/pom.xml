@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.microservice</groupId>
+    <artifactId>API-Project-Builder</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <name>API-Project-Builder</name>
+    <modules>
+        <module>../core-service-library</module>
+        <module>../core-service-model</module>
+        <module>../core-web-security</module>
+        <module>../core-database-adapter</module>
+        <module>../cloud-server-config</module>
+        <module>../cloud-server-discovery</module>
+        <module>../cloud-server-gateway</module>
+        <module>../micro-service-master</module>
+        <module>../micro-service-authentication</module>
+    </modules>
+</project>
