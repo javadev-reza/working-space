@@ -20,8 +20,9 @@ import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import com.microservice.security.service.impl.SwaggerInfo;
+import com.microservice.implement.SwaggerInfo;
 import static org.springframework.http.HttpHeaders.*;
+
 /**
  *
  * @author Reza
@@ -31,53 +32,52 @@ import static org.springframework.http.HttpHeaders.*;
 @EnableDiscoveryClient
 @SpringBootApplication
 public class AuthenticationMicroservice {
-    
+
     public static void main(String[] args) {
-	SpringApplication.run(AuthenticationMicroservice.class, args);
+        SpringApplication.run(AuthenticationMicroservice.class, args);
     }
-    
+
     @Value("${com.tomcat.apr:false}")
     private boolean enableApr;
-	
+
     @Bean
     public TomcatEmbeddedServletContainerFactory tomcatEmbeddedServletContainerFactory() {
-	TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
-	if (enableApr) {
+        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+        if (enableApr) {
             tomcat.setProtocol("org.apache.coyote.http11.Http11AprProtocol");
             tomcat.addContextLifecycleListeners(new AprLifecycleListener());
             tomcat.setAddress(new InetSocketAddress(0).getAddress());
-	}
-	return tomcat;
+        }
+        return tomcat;
     }
-    
+
     @Bean
     public Docket api(){
         List<Parameter> aParameters = new ArrayList<>();
-		
-	    aParameters.add(new ParameterBuilder()
-            .name(AUTHORIZATION)
-            .description(AUTHORIZATION)
-            .modelRef(new ModelRef("string"))
-            .parameterType("header")
-            .required(true)
-            .build());
 
         aParameters.add(new ParameterBuilder()
-            .name(FROM)
-            .description(FROM)
-            .modelRef(new ModelRef("string"))
-            .parameterType("header")
-            .required(true)
-            .build());
-        
+                .name(AUTHORIZATION)
+                .description(AUTHORIZATION)
+                .modelRef(new ModelRef("string"))
+                .parameterType("header")
+                .required(true)
+                .build());
+
+        aParameters.add(new ParameterBuilder()
+                .name(FROM)
+                .description(FROM)
+                .modelRef(new ModelRef("string"))
+                .parameterType("header")
+                .required(true)
+                .build());
+
         return new Docket(DocumentationType.SWAGGER_2)
-            .apiInfo(new SwaggerInfo().apiInfoAuth())
-            .pathMapping("")
-            .globalOperationParameters(aParameters)
-            .select()
-            .apis(RequestHandlerSelectors.basePackage(CONTROLLER_PATCH))
-            .paths(PathSelectors.any())
-            .build();    
+                .apiInfo(new SwaggerInfo().apiInfoAuth())
+                .pathMapping("")
+                .globalOperationParameters(aParameters)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(CONTROLLER_PATCH))
+                .paths(PathSelectors.any())
+                .build();
     }
-    
 }

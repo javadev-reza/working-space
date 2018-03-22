@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Reza
  */
-public class RestUtil extends BaseTemp{
+public class RestUtil extends BaseTemp {
     
     public @ResponseBody
     <T> List setResponse(List<Map<String, Object>> src) {

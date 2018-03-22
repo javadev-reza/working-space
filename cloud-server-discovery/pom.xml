@@ -8,88 +8,93 @@
     <name>cloud-server-discovery</name>
     <properties>
         <java.version>1.8</java.version>
-	<maven.test.skip>true</maven.test.skip>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <parent>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-parent</artifactId>
-	<version>1.5.10.RELEASE</version>
-	<relativePath />
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.10.RELEASE</version>
+        <relativePath />
     </parent>
     <dependencies>
-	<dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka-server</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-instrument</artifactId>
             <scope>provided</scope>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-elasticbeanstalk</artifactId>
             <scope>provided</scope>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-ec2</artifactId>
             <scope>provided</scope>
-	</dependency>
-	<dependency>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-cloudformation</artifactId>
             <scope>provided</scope>
-	</dependency>
+        </dependency>
+        <dependency>
+            <groupId>com.github.vanroy</groupId>
+            <artifactId>spring-cloud-dashboard</artifactId>
+            <version>1.2.0.RELEASE</version>
+        </dependency>
 
-	<!-- Test -->
-	<dependency>
+        <!-- Test -->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-	</dependency>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
             <dependency>
-		<groupId>org.springframework.cloud</groupId>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-		<version>Dalston.SR1</version>
+                <version>Dalston.SR1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-	</dependencies>
+        </dependencies>
     </dependencyManagement>
     <build>
-	<plugins>
+        <plugins>
             <plugin>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-	</plugins>
+        </plugins>
     </build>
 </project>

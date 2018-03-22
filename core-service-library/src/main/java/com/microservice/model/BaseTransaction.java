@@ -15,12 +15,12 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @MappedSuperclass
-public class BaseTransaction extends BaseTemp implements Serializable{
+public class BaseTransaction implements Serializable {
     
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
-    @Column(columnDefinition = "CHAR(64)", unique = true)
+    @Column(columnDefinition = "CHAR(32)", unique = true)
     private String code;
     
     @Column(name = "statusEnabled", nullable=true)

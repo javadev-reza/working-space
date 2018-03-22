@@ -1,7 +1,6 @@
 package com.microservice.model;
 
 import java.util.Map;
-import org.springframework.data.domain.Pageable;
 
 /**
  *
@@ -10,9 +9,9 @@ import org.springframework.data.domain.Pageable;
  * @param <Object>
  */
 public interface BaseService<T, Object>{
-    Map save(T vo);
-    Map update(T vo);
+    Map save(T dto);
+    Map update(T dto);
     Map delete(Object primary);
     Map getOne(Object primary);
-    Map getAll(Pageable page, String name);
+    Map getAll(PageDto pageDto);
 }

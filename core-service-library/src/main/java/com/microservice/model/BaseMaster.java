@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,11 +15,10 @@ import lombok.Setter;
  *
  * @author Reza
  */
-@SuppressWarnings("serial")
 @Getter
 @Setter
 @MappedSuperclass
-public class BaseMaster extends BaseTemp implements Serializable{
+public class BaseMaster implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +28,6 @@ public class BaseMaster extends BaseTemp implements Serializable{
     @Column(name = "statusEnabled", nullable=true)
     private Boolean statusEnabled;
     
-    @Column(name="description", length=100, nullable=true)
+    @Column(name="description", length=50, nullable=true)
     private String description;
 }

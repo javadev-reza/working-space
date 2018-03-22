@@ -29,7 +29,7 @@ public class DatasourceConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
-	if (ds == null) {
+        if (ds == null) {
             ds = DataSourceBuilder.create().build();
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
@@ -37,14 +37,14 @@ public class DatasourceConfig {
                     ((HikariDataSource) ds).close();
                 }
             });
-	}
-	return ds;
+        }
+        return ds;
     }
 
     @Bean
     FlywayMigrationInitializer flywayInitializer(Flyway flyway) {
-	return new FlywayMigrationInitializer(flyway, (f) -> {
-	});
+        return new FlywayMigrationInitializer(flyway, (f) -> {
+        });
     }
 
     void logDS() {
@@ -69,13 +69,13 @@ public class DatasourceConfig {
     @Bean
     @DependsOn("entityManagerFactory")
     FlywayMigrationInitializer delayedFlywayInitializer(Flyway flyway) {
-	logDS();
-	return new FlywayMigrationInitializer(flyway, null);
+        logDS();
+        return new FlywayMigrationInitializer(flyway, null);
     }
     
     @Bean
-    public SessionFactory sessionFactory(HibernateEntityManagerFactory hemf) {
-	return hemf.getSessionFactory();
+    public SessionFactory sessionFactory(HibernateEntityManagerFactory hibernateEntityManagerFactory) {
+	    return hibernateEntityManagerFactory.getSessionFactory();
     }
     
 }

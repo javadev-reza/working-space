@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.10.RELEASE</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microservice</groupId>
     <artifactId>core-database-adapter</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>core-database-adapter</name>
+
     <properties>
         <java.version>1.8</java.version>
-	<maven.test.skip>true</maven.test.skip>
+	    <maven.test.skip>true</maven.test.skip>
     </properties>
-    <parent>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-parent</artifactId>
-	<version>1.5.10.RELEASE</version>
-    </parent>
+
     <dependencies>
         <dependency>
             <groupId>com.microservice</groupId>
-            <artifactId>core-service-model</artifactId>
+            <artifactId>core-service-persistence</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
         </dependency>
@@ -26,54 +29,54 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <exclusions>
-		<exclusion>
+                <exclusion>
                     <groupId>org.apache.tomcat</groupId>
                     <artifactId>tomcat-jdbc</artifactId>
                 </exclusion>
             </exclusions>
-	</dependency>
-	<dependency>
+	    </dependency>
+	    <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-	</dependency>
-	<dependency>
+	    </dependency>
+	    <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-	</dependency>
-	<dependency>
+	    </dependency>
+	    <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
-	</dependency>
-	<dependency>
+	    </dependency>
+	    <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-	</dependency>
+	    </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-maven-plugin</artifactId>
             <version>3.0</version>
             <exclusions>
-		<exclusion>
+                <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-nop</artifactId>
-		</exclusion>
-		<exclusion>
+                </exclusion>
+		        <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-jdk14</artifactId>
-		</exclusion>
+		        </exclusion>
             </exclusions>
-	</dependency>
+	    </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
     </dependencies>
     <build>
-	<plugins>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -83,6 +86,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
             </plugin>
-	</plugins>
+        </plugins>
     </build>
 </project>

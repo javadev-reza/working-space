@@ -1,19 +1,15 @@
 package com.microservice.security;
 
 import com.microservice.annotation.Permission;
+import com.microservice.dto.M_ApiRegisterDto;
+import com.microservice.dto.M_ApplicationDto;
+import com.microservice.dto.M_ModulDto;
 import com.microservice.enums.Restclient;
-import com.microservice.enums.Roleuser;
-import com.microservice.model.M_Application;
-import com.microservice.model.T_MapMenuToUser;
-import com.microservice.model.dto.M_ApiRegisterDto;
-import com.microservice.model.dto.M_ApplicationDto;
-import com.microservice.model.dto.M_ModulDto;
-import com.microservice.repository.MapMenuToUserRepository;
-import com.microservice.security.service.impl.BaseServiceImpl;
+import com.microservice.implement.BaseServiceImpl;
+import com.microservice.repository.JobRoleMenuRepo;
 import com.microservice.util.CommonUtil;
 import com.microservice.util.RestExceptionUtil.ForbiddenException;
 import java.lang.reflect.Method;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -25,7 +21,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import static com.microservice.enums.Roleuser.SUPERUSER;
 import static org.springframework.http.HttpHeaders.FROM;
 
 /**
@@ -36,7 +31,7 @@ import static org.springframework.http.HttpHeaders.FROM;
 public class PermissionInterceptor extends BaseServiceImpl implements HandlerInterceptor {
 
     @Autowired
-    private MapMenuToUserRepository mapMenuToUserRepository;
+    private JobRoleMenuRepo jobRoleMenuRepo;
 
     private final Logger LOG = LoggerFactory.getLogger(PermissionInterceptor.class);
 
@@ -93,13 +88,13 @@ public class PermissionInterceptor extends BaseServiceImpl implements HandlerInt
         }
         return result;
     }
-    //--------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
 
     private Boolean permissionExecute(Permission annotation, String URI, String From) {
         Boolean restclientValidation = false;
         Boolean roleuserValidation   = false;
         //--------------------------------------------------------------------------------------------------------------
-        Restclient[] restclients = annotation.restclient();
+        Restclient[] restclients = annotation.value();
         for(Restclient restclient : restclients){
             if(restclient.getRestclient().matches(From)){
                 restclientValidation = true;
@@ -109,31 +104,24 @@ public class PermissionInterceptor extends BaseServiceImpl implements HandlerInt
         //--------------------------------------------------------------------------------------------------------------
 
         Boolean check =
-                URI.contains("/signin-web")
-                || URI.contains("/signup-web")
-                || URI.contains("/signout-web")
-                || URI.contains("/signin-mobile")
-                || URI.contains("/signup-mobile")
-                || URI.contains("/signout-mobile");
+                URI.contains("/sign-in")
+                || URI.contains("/sign-up-mobile");
 
         if(!check) {
-            Roleuser[] roleusers = annotation.roleuser();
-            for (Roleuser roleuser : roleusers) {
-                if ((roleuser.getValue() == SUPERUSER.getValue()) && (getSession().getRoleUserId() == SUPERUSER.getValue())) {
-                    roleuserValidation = true;
-                } else {
-                    for (M_ModulDto modulDto :
-                            jsonToModulDto(mapMenuToUserRepository
-                                    .findByLoginUserCode(getSession().getAuthCode()).getMenuList())) {
-                        //--------------------------------------------------------------------------------------------------
-                        for (M_ApplicationDto applicationDto : modulDto.getApplication()) {
-                            //----------------------------------------------------------------------------------------------
-                            for (M_ApiRegisterDto apiRegisterDto : applicationDto.getApiRegister()) {
-                                //------------------------------------------------------------------------------------------
-                                if (apiRegisterDto.getLink().contains(URI)) {
-                                    roleuserValidation = true;
-                                    break;
-                                }
+            if(getSession().getUserCode().equalsIgnoreCase("SU-8181619fa61501619fbfc4ce0001")){
+                roleuserValidation = true;
+            } else {
+                for (M_ModulDto modulDto :
+                        jsonToModulDto(jobRoleMenuRepo
+                                .findByStatusEnabledAndJobRoleCode(true, getSession().getJobRoleCode()).getMenuList())) {
+                    //--------------------------------------------------------------------------------------------------
+                    for (M_ApplicationDto applicationDto : modulDto.getApplication()) {
+                        //----------------------------------------------------------------------------------------------
+                        for (M_ApiRegisterDto apiRegisterDto : applicationDto.getApiRegister()) {
+                            //------------------------------------------------------------------------------------------
+                            if (apiRegisterDto.getLink().contains(URI)) {
+                                roleuserValidation = true;
+                                break;
                             }
                         }
                     }

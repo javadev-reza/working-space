@@ -11,7 +11,7 @@
     <name>API-Project-Builder</name>
     <modules>
         <module>../core-service-library</module>
-        <module>../core-service-model</module>
+        <module>../core-service-persistence</module>
         <module>../core-web-security</module>
         <module>../core-database-adapter</module>
         <module>../cloud-server-config</module>
@@ -19,5 +19,7 @@
         <module>../cloud-server-gateway</module>
         <module>../micro-service-master</module>
         <module>../micro-service-authentication</module>
+        <module>../micro-service-messaging</module>
+        <module>../micro-service-company</module>
     </modules>
 </project>

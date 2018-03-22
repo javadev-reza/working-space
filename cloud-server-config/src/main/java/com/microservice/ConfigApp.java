@@ -27,12 +27,12 @@ public class ConfigApp  {
 	
     @Bean
     public TomcatEmbeddedServletContainerFactory tomcatEmbeddedServletContainerFactory() {
-	TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
-	if (enableApr) {
+	    TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+	    if (enableApr) {
             tomcat.setProtocol("org.apache.coyote.http11.Http11AprProtocol");
             tomcat.addContextLifecycleListeners(new AprLifecycleListener());
             tomcat.setAddress(new InetSocketAddress(0).getAddress());
-	}
-	return tomcat;
+	    }
+	    return tomcat;
     }
 }
