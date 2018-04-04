@@ -18,8 +18,16 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
 @Getter
 @Setter
 @Entity
-@Table(name="T_Profile")
-public class T_Profile extends BaseTransaction {
+@Table(name="T_UserProfile")
+public class T_UserProfile extends BaseTransaction {
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userCode", insertable = false, updatable = false)
+    private T_User user;
+
+    @Column(name = "userCode", length = 32, nullable = true)
+    private String userCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
     @Column(name = "firstName", length = 50, nullable = false)

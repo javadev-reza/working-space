@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT_NULL;
 
@@ -16,17 +17,34 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
 @Getter
 @Setter
 @Entity
-@Table(name="T_AdministrativeDivision")
-public class T_AdministrativeDivision extends BaseTransaction {
+@Table(name="T_CompanyProfile")
+public class T_CompanyProfile extends BaseTransaction {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profileCode", insertable = false, updatable = false)
-    private T_Profile profile;
+    @JoinColumn(name = "companyCode", insertable = false, updatable = false)
+    private T_Company company;
+
+    @Column(name = "companyCode", length = 32, nullable = true)
+    private String companyCode;
+
+    @Column(name = "address", length = 50, nullable = true)
+    private String address;
+
+    @Column(name = "postalCode", length = 10, nullable = true)
+    private String postalCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
-    @Column(name = "profileCode", length = 32, nullable = false)
-    private String profileCode;
+    @Column(name = "phoneNumber", length = 30, nullable = false)
+    private String phoneNumber;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    @Column(name = "emailAddress", length = 30, nullable = false)
+    private String emailAddress;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    @Column(name = "dateJoined", nullable = false)
+    private Date dateJoined;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,5 +88,4 @@ public class T_AdministrativeDivision extends BaseTransaction {
 
     @Column(name = "vilageId", nullable = true)
     private Integer vilageId;
-
 }

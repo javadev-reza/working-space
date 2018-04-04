@@ -1,15 +1,12 @@
 package com.microservice.implement;
 
 import com.microservice.dto.SignInDto;
-import com.microservice.dto.SignUpMobileDto;
-import com.microservice.dto.SignUpWebDto;
 import com.microservice.model.*;
 import com.microservice.repository.*;
 import com.microservice.security.UserAuthentication;
 import com.microservice.security.AuthenticateAdapter;
 import com.microservice.service.AuthenticationService;
 import com.microservice.util.CommonUtil;
-import com.microservice.util.DateUtil;
 import com.microservice.util.PasswordUtil;
 import com.microservice.util.RestExceptionUtil.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +32,6 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 
     @Autowired
     private ActiveUserRepo activeUserRepo;
-
-    @Autowired
-    private ProfileRepo profileRepo;
-
-    @Autowired
-    private AdministrativeDivisionRepo administrativeDivisionRepo;
-
-    @Autowired
-    private BankAccountRepo bankAccountRepo;
 
     @Transactional(readOnly = false)
     public T_ActiveUser statusActive(String userCode){
@@ -87,9 +75,11 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
                     //----------------------------------------------------------------------------------------------
                     Boolean isValidToken = authenticateAdapter.tokenGeneratorAdapter(response, new UserAuthentication(
                             new User(user.getUserName(), user.getPassword(), Arrays.asList(authority))));
-
+                    //--------------------------------------------------------------------------------------------------
                     if (isValidToken) {
-                        result.put("result", "protected by system");
+                        Map<String, Object> userData = setResult(user);
+                        //----------------------------------------------------------------------------------------------
+                        result = userData;
                     }
                 } else {
                     T_ActiveUser activeUser = statusActive(user.getCode());
@@ -104,8 +94,11 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
                             activeUser.setActiveStatus(true);
                             //------------------------------------------------------------------------------------------
                             activeUserRepo.save(activeUser);
+                            //------------------------------------------------------------------------------------------
+                            Map<String, Object> userData = setResult(user);
 
-                            result = setResult(user);
+                            //------------------------------------------------------------------------------------------
+                            result = userData;
                         }
                     } else {
                         throw new ForbiddenException("User does not have access privileges");
@@ -139,77 +132,5 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         }
         //--------------------------------------------------------------------------------------------------------------
         return setResult(activeUser);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public Map signUpWeb(SignUpWebDto dtos){
-        //--------------------------------------------------------------------------------------------------------------
-        T_Profile profile = profileRepo.save(setModel(dtos.getProfile(), new T_Profile()));
-        //--------------------------------------------------------------------------------------------------------------
-        profile.setDateJoined(DateUtil.now());
-        //--------------------------------------------------------------------------------------------------------------
-        if (CommonUtil.isNotNullOrEmpty(profile.getCode())) {
-            T_User user = new T_User();
-            //----------------------------------------------------------------------------------------------------------
-            setModel(dtos.getUser(), user);
-            //----------------------------------------------------------------------------------------------------------
-            user.setProfileCode(profile.getCode());
-            //----------------------------------------------------------------------------------------------------------
-            userRepo.save(user);
-            //==========================================================================================================
-            T_AdministrativeDivision administrativeDivision = new T_AdministrativeDivision();
-            //----------------------------------------------------------------------------------------------------------
-            setModel(dtos.getAdministrativeDivision(), administrativeDivision);
-            //----------------------------------------------------------------------------------------------------------
-            administrativeDivision.setProfileCode(profile.getCode());
-            //----------------------------------------------------------------------------------------------------------
-            administrativeDivisionRepo.save(administrativeDivision);
-            //==========================================================================================================
-            T_BankAccount bankAccount = new T_BankAccount();
-            //----------------------------------------------------------------------------------------------------------
-            setModel(dtos.getBankAccount(), bankAccount);
-            //----------------------------------------------------------------------------------------------------------
-            bankAccount.setProfileCode(profile.getCode());
-            //----------------------------------------------------------------------------------------------------------
-            bankAccountRepo.save(bankAccount);
-        }
-        return setResult(profile);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public Map signUpMobile(SignUpMobileDto dto){
-        //--------------------------------------------------------------------------------------------------------------
-        T_Profile profile = new T_Profile();
-        //--------------------------------------------------------------------------------------------------------------
-        profile.setDateJoined(DateUtil.now());
-        //--------------------------------------------------------------------------------------------------------------
-        if (CommonUtil.isNotNullOrEmpty(dto)) {
-            profile.setFirstName(dto.getFirstName());
-            //----------------------------------------------------------------------------------------------------------
-            profile.setLastName(dto.getLastName());
-            //----------------------------------------------------------------------------------------------------------
-            profile.setEmailAddress(dto.getEmailAddress());
-            //----------------------------------------------------------------------------------------------------------
-            profile.setPhoneNumber(dto.getPhoneNumber());
-            //----------------------------------------------------------------------------------------------------------
-            profile.setStatusEnabled(true);
-            //----------------------------------------------------------------------------------------------------------
-            profile = profileRepo.save(profile);
-            //----------------------------------------------------------------------------------------------------------
-            if(CommonUtil.isNotNullOrEmpty(profile.getCode())) {
-                T_User user = new T_User();
-                //------------------------------------------------------------------------------------------------------
-                user.setProfileCode(profile.getCode());
-                //------------------------------------------------------------------------------------------------------
-                user.setUserName(dto.getUserName());
-                //------------------------------------------------------------------------------------------------------
-                user.setPassword(dto.getPassword());
-                //------------------------------------------------------------------------------------------------------
-                userRepo.save(user);
-            }
-        }
-        return setResult(profile);
     }
 }

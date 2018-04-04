@@ -20,11 +20,6 @@ public class T_CompanyDto extends BaseTransactionDto {
     private String company;
 
     @NotNull(message = COLUMN_NOT_NULL)
-    private String profileCode;
-
-    @NotNull(message = COLUMN_NOT_NULL)
     private Integer businessScaleId;
 
-    @NotNull(message = COLUMN_NOT_NULL)
-    private Integer businessFieldsId;
 }

@@ -1,14 +1,13 @@
 package com.microservice.dto;
 
-import com.microservice.model.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.microservice.model.BaseTransactionDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT_NULL;
 
@@ -18,7 +17,22 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
  */
 @Getter
 @Setter
-public class T_AdministrativeDivisionDto extends BaseTransactionDto{
+public class T_CompanyProfileDto extends BaseTransactionDto {
+
+    private String companyCode;
+
+    private String address;
+
+    private String postalCode;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    private String phoneNumber;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    private String emailAddress;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    private Date dateJoined;
 
     @NotNull(message = COLUMN_NOT_NULL)
     private Integer countryId;

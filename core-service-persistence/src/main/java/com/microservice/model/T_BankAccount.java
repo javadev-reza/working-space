@@ -22,7 +22,7 @@ public class T_BankAccount extends BaseTransaction {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profileCode", insertable = false, updatable = false)
-    private T_Profile profile;
+    private T_UserProfile profile;
 
     @NotNull(message = COLUMN_NOT_NULL)
     @Column(name = "profileCode", length = 32, nullable = false)

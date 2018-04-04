@@ -55,14 +55,11 @@ public class UserService implements UserDetailsService {
                 sessJson.put("userCode", user.getCode());
                 sessJson.put("userName", user.getUserName());
                 sessJson.put("password", user.getPassword());
-                //------------------------------------------------------------------------------------------------------
-                if(CommonUtil.isNullOrEmpty(user.getProfileCode())
-                        && CommonUtil.isNullOrEmpty(user.getJobRoleCode())){
+                sessJson.put("jobRoleCode", user.getJobRoleCode());
 
-                    sessJson.put("profileCode", "");
+                if(CommonUtil.isNullOrEmpty(user.getJobRoleCode())){
                     sessJson.put("jobRoleCode", "");
                 } else {
-                    sessJson.put("profileCode", user.getProfileCode());
                     sessJson.put("jobRoleCode", user.getJobRoleCode());
                 }
             } catch (JSONException e) {

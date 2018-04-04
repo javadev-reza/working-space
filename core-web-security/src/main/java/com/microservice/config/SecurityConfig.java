@@ -110,7 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(ImmutableList.of("*"));
-        config.setAllowedHeaders(ImmutableList.of(AUTHORIZATION, FROM, "remember-me", "content-type"));
+        config.setAllowedHeaders(ImmutableList.of(AUTHORIZATION, FROM, "content-type"));
         config.setAllowedMethods(ImmutableList.of("OPTIONS","POST","GET","PUT","DELETE","PATCH"));
         source.registerCorsConfiguration("/**", config);
 

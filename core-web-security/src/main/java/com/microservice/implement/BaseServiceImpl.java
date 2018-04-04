@@ -96,7 +96,6 @@ public abstract class BaseServiceImpl extends BaseTemp {
             //------------------------------------------------------------------
             sessionDto.setClient(json.getString("client"));
             sessionDto.setUserCode(json.getString("userCode"));
-            sessionDto.setProfileCode(json.getString("profileCode"));
             sessionDto.setJobRoleCode(json.getString("jobRoleCode"));
             sessionDto.setUserName(json.getString("userName"));
             sessionDto.setPassword(json.getString("password"));
@@ -120,7 +119,7 @@ public abstract class BaseServiceImpl extends BaseTemp {
 
     //------------------------------------------------------------------------------------------------------------------
     public <T> Object toModel(Object instance, T clazz){
-        return new Gson().fromJson(new Gson().toJson(instance), (Class<T>) clazz.getClass());
+        return new Gson().fromJson(new Gson().toJsonTree(instance), (Class<T>) clazz.getClass());
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -173,19 +172,17 @@ public abstract class BaseServiceImpl extends BaseTemp {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public <T> Map<String, Object> setResult(T model){
+    public <T> Map setResult(T model){
         Map<String, Object> result = new HashMap<>();
         if(CommonUtil.isNotNullOrEmpty(model)) {
             if (model instanceof org.springframework.data.domain.Page) {
                 result.put("result", setResultPage((Page) model));
             } else if (model instanceof Map){
-                result.put("result", model);
+                result.put("result", toMap(model));
             } else if(model instanceof List){
-                result.put("result", model);
+                result.put("result", toMap(model));
             } else {
-                Map<String, Object> map = new HashMap<>();
-                map.put(model.getClass().getSimpleName(), toMap(model));
-                result.put("result", map);
+                result.put("result", toMap(model));
             }
         }
         return result;
