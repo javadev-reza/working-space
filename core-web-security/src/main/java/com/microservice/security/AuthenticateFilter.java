@@ -8,7 +8,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.microservice.util.RestExceptionUtil;
+import com.microservice.util.RestExceptionUtil.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -35,8 +35,8 @@ public class AuthenticateFilter extends GenericFilterBean {
         try {
             authentication = authService.tokenValidatorAdapter(servletRequest);
         } catch (Exception ex) {
-            logger.info(ex.getMessage());
-            throw new RestExceptionUtil.UnauthorizedException(ex.getMessage());
+            ex.printStackTrace();
+            throw new UnauthorizedException(ex.getMessage());
         }
         //--------------------------------------------------------------------------------------------------------------
         try {
@@ -44,8 +44,8 @@ public class AuthenticateFilter extends GenericFilterBean {
             filterChain.doFilter(servletRequest, servletResponse);
             SecurityContextHolder.getContext().setAuthentication(null);
         } catch (Exception ex) {
-            logger.info(ex.getMessage());
-            throw new RestExceptionUtil.InternalServerErrorException(ex.getMessage());
+            ex.printStackTrace();
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 

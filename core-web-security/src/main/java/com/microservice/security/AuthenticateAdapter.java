@@ -18,8 +18,8 @@ public class AuthenticateAdapter extends BaseServiceImpl{
 
     public TokenHandler tokenHandler;
 	
-    public AuthenticateAdapter(UserService userService) {
-        tokenHandler = new TokenHandler(userService);
+    public AuthenticateAdapter(UserDetailServiceImpl userDetailServiceImpl) {
+        tokenHandler = new TokenHandler(userDetailServiceImpl);
     }
 
     public Boolean tokenGeneratorAdapter(HttpServletResponse httpResponse, UserAuthentication authentication) {

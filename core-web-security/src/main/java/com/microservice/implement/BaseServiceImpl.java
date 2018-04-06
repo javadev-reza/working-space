@@ -1,15 +1,12 @@
 package com.microservice.implement;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.microservice.dto.M_ModulDto;
-import com.microservice.dto.SessionDto;
-import com.microservice.model.BaseTemp;
-import com.microservice.model.PageDto;
+import com.microservice.dto.*;
+import com.microservice.model.*;
 import com.microservice.util.CommonUtil;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
-import org.json.JSONObject;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +39,11 @@ public abstract class BaseServiceImpl extends BaseTemp {
             numberGenerator = ng = new SecureRandom();
         }
         return Long.toHexString(MSB | ng.nextLong()) + Long.toHexString(MSB | ng.nextLong());
+    }
+
+    public String getDefaultPassword(){
+        String password = getGenerateCode();
+        return password.substring(password.length()-10, password.length()).toUpperCase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -87,18 +89,11 @@ public abstract class BaseServiceImpl extends BaseTemp {
     //------------------------------------------------------------------------------------------------------------------
     public SessionDto getSession() {
         SessionDto sessionDto = new SessionDto();
-        //----------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //----------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------
         if (CommonUtil.isNotNullOrEmpty(principal)) {
-            //------------------------------------------------------------------
-            JSONObject json = new JSONObject(principal.toString());
-            //------------------------------------------------------------------
-            sessionDto.setClient(json.getString("client"));
-            sessionDto.setUserCode(json.getString("userCode"));
-            sessionDto.setJobRoleCode(json.getString("jobRoleCode"));
-            sessionDto.setUserName(json.getString("userName"));
-            sessionDto.setPassword(json.getString("password"));
+            sessionDto = mapToModel(stringToMap(principal.toString()), new SessionDto());
         }
         return sessionDto;
     }
@@ -118,25 +113,32 @@ public abstract class BaseServiceImpl extends BaseTemp {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public <T> Object toModel(Object instance, T clazz){
-        return new Gson().fromJson(new Gson().toJsonTree(instance), (Class<T>) clazz.getClass());
+    public <T> T mapToModel(Object instance, T clazz){
+       return (T) new ObjectMapper().convertValue(instance, clazz.getClass());
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-
-    public <T> Map<String, Object> toMap(T clazz){
+    public <T> Map<String, Object> modelToMap(T clazz){
         Type type = new TypeToken<Map<String, Object>>(){}.getType();
         return new Gson().fromJson(new Gson().toJsonTree(clazz), type);
     }
 
+    public String mapToString(Map<String, Object> hashMap){
+        return new Gson().toJson(hashMap);
+    }
+
+    public Map<String, Object> stringToMap(String json){
+        Type type = new TypeToken<Map<String, Object>>(){}.getType();
+        return new Gson().fromJson(json, type);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
-    public <T> List<Map> toListMap(List<T> listClazz){
+    public <T> List<Map> listModelToListMap(List<T> listClazz){
         Type type = new TypeToken<List<Map<String, Object>>>(){}.getType();
         return new Gson().fromJson(new Gson().toJsonTree(listClazz), type);
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public <T> String listMapToJson(List<T> listClazz){
+    public <T> String listMapToString(List<T> listClazz){
         return new Gson().toJson(listClazz);
     }
 
@@ -178,14 +180,18 @@ public abstract class BaseServiceImpl extends BaseTemp {
             if (model instanceof org.springframework.data.domain.Page) {
                 result.put("result", setResultPage((Page) model));
             } else if (model instanceof Map){
-                result.put("result", toMap(model));
+                result.put("result", modelToMap(model));
             } else if(model instanceof List){
-                result.put("result", toMap(model));
+                result.put("result", modelToMap(model));
             } else {
-                result.put("result", toMap(model));
+                result.put("result", modelToMap(model));
             }
         }
         return result;
+    }
+
+    public Map getResult(Map<String, Object> value){
+        return (Map<String, Object>) value.get("result");
     }
 
     //------------------------------------------------------------------------------------------------------------------

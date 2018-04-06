@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 public interface CountyTownRepo extends JpaRepository<M_CountyTown, Integer> {
     M_CountyTown findByStatusEnabledAndId(Boolean StatusEnabled, Integer id);
-    Page<M_CountyTown> findByStatusEnabledAndProvinceIdIsInOrCountyTownIgnoreCaseContaining(Pageable pageable, Boolean StatusEnabled, List<Integer> provinceId, String countyTown);
+    Page<M_CountyTown> findByStatusEnabledAndProvinceIdIsInAndCountyTownIgnoreCaseContaining(Pageable pageable, Boolean StatusEnabled, List<Integer> provinceId, String countyTown);
 }

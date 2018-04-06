@@ -18,10 +18,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  */
 public class TokenHandler extends BaseServiceImpl{
 
-    private final UserService userService;
+    private final UserDetailServiceImpl userDetailServiceImpl;
 
-    public TokenHandler(UserService userService) {
-        this.userService = userService;
+    public TokenHandler(UserDetailServiceImpl userDetailServiceImpl) {
+        this.userDetailServiceImpl = userDetailServiceImpl;
     }
 
     public User tokenValidator(String authorization, String from) {
@@ -45,12 +45,12 @@ public class TokenHandler extends BaseServiceImpl{
                             .parseClaimsJws(token)
                             .getBody()
                             .getSubject();
-                    user = userService.loadUserByUsername(decryptor(username, SECRET)+"-##-"+from);
+                    user = userDetailServiceImpl.loadUserByUsername(decryptor(username, SECRET)+"-##-"+from);
                 } else{
                     throw new UnauthorizedException("Missing or invalid authorization");
                 }
             } catch (Exception e) {
-                throw new UnauthorizedException("Missing or invalid authorization");
+                throw new InternalServerErrorException(e.getMessage());
             }
         }
         return user;

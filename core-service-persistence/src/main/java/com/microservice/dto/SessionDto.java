@@ -1,5 +1,8 @@
 package com.microservice.dto;
 
+import com.microservice.model.T_Company;
+import com.microservice.model.T_Role;
+import com.microservice.model.T_User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,17 +14,11 @@ import lombok.Setter;
 @Setter
 public class SessionDto {
 
-    private String client;
+    private String from;
 
-    private String userCode;
+    private T_CompanyDto company;
 
-    private String profileCode;
+    private T_RoleDto role;
 
-    private String jobRoleCode;
-
-    private String userName;
-
-    private String password;
-
-
+    private T_UserDto user;
 }

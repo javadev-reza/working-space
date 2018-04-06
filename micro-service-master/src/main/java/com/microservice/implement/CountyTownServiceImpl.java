@@ -53,7 +53,7 @@ public class CountyTownServiceImpl extends BaseServiceImpl implements CountyTown
     @Override
     public Map getAll(PageDto pageDto) {
         Page<M_CountyTown> countyTowns =
-                countyTownRepo.findByStatusEnabledAndProvinceIdIsInOrCountyTownIgnoreCaseContaining(
+                countyTownRepo.findByStatusEnabledAndProvinceIdIsInAndCountyTownIgnoreCaseContaining(
                         setPageRequest(pageDto), true, setGroupId(pageDto.getGroupBy()), pageDto.getFindBy());
         //--------------------------------------------------------------------------------------------------------------
         return setResult(countyTowns);

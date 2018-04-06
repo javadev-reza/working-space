@@ -1,6 +1,6 @@
 package com.microservice.dto;
 
-import com.microservice.model.BaseMasterDto;
+import com.microservice.model.BaseTransactionDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +14,11 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
  */
 @Getter
 @Setter
-public class M_BusinessFieldDto extends BaseMasterDto {
+public class T_RoleMenuDto extends BaseTransactionDto {
 
     @NotNull(message = COLUMN_NOT_NULL)
-    private String businessFields;
+    private String roleCode;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    private String menuList;
 }

@@ -33,15 +33,6 @@ public class T_Product extends BaseTransaction {
     @Column(name = "userCode", length = 32, nullable = true)
     private String userCode;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "businessFieldId", insertable = false, updatable = false)
-    private M_BusinessField businessField;
-
-    @NotNull(message = COLUMN_NOT_NULL)
-    @Column(name = "businessFieldId", nullable = false)
-    private Integer businessFieldId;
-
     @NotNull(message = COLUMN_NOT_NULL)
     @Column(name = "price", nullable = false)
     private Double price;

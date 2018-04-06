@@ -14,5 +14,4 @@ import org.springframework.stereotype.Repository;
 public interface OrderStatusRepo extends JpaRepository<M_OrderStatus, Integer> {
     M_OrderStatus findByStatusEnabledAndId(Boolean statusEnabled, Integer id);
     Page<M_OrderStatus> findByStatusEnabledAndOrderStatusIgnoreCaseContaining(Pageable pageable, Boolean statusEnabled, String orderStatus);
-
 }

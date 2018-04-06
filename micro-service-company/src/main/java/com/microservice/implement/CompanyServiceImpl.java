@@ -1,30 +1,51 @@
 package com.microservice.implement;
 
-import com.microservice.dto.CompanyRegistrationDto;
-import com.microservice.dto.T_CompanyDto;
-import com.microservice.dto.T_CompanyProfileDto;
-import com.microservice.model.PageDto;
-import com.microservice.model.T_Company;
-import com.microservice.repository.CompanyRepo;
-import com.microservice.service.CompanyProfileService;
-import com.microservice.service.CompanyService;
+import com.microservice.dto.*;
+import com.microservice.model.*;
+import com.microservice.repository.*;
+import com.microservice.service.*;
 import com.microservice.util.CommonUtil;
-import com.microservice.util.DateUtil;
+import com.microservice.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class CompanyServiceImpl extends BaseServiceImpl implements CompanyService {
 
+
+    @Autowired
+    private CompanyProfileService companyProfileService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private CompanyRepo companyRepo;
 
     @Autowired
-    private CompanyProfileService companyProfileService;
+    private ModulRepo modulRepo;
+
+    @Autowired
+    private ApplicationRepo applicationRepo;
+
+    @Autowired
+    private ApiRegisterRepo apiRegisterRepo;
+
+    @Autowired
+    private RoleMenuRepo roleMenuRepo;
+
 
     @Override
     @Transactional(readOnly = false)
@@ -74,13 +95,97 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
     @Transactional(readOnly = false)
     public Map registration_add(CompanyRegistrationDto dto){
         Map<String, Object> company = save(dto.getCompany());
-        //--------------------------------------------------------------------------------------------------------------
-        if(CommonUtil.isNotNullOrEmpty(company)) {
-            T_CompanyProfileDto companyProfileDto = dto.getCompanyProfile();
+        try {
             //----------------------------------------------------------------------------------------------------------
-            companyProfileDto.setCompanyCode((String)company.get("code"));
-            //----------------------------------------------------------------------------------------------------------
-            companyProfileService.save(companyProfileDto);
+            if (CommonUtil.isNotNullOrEmpty(company)) {
+                String companyCode = (String) getResult(company).get("code");
+                //------------------------------------------------------------------------------------------------------
+                T_CompanyProfileDto companyProfileDto = dto.getCompanyProfile();
+                //------------------------------------------------------------------------------------------------------
+                companyProfileDto.setCompanyCode(companyCode);
+                //------------------------------------------------------------------------------------------------------
+                Map<String, Object> companyProfile = companyProfileService.save(companyProfileDto);
+                //======================================================================================================
+                if (CommonUtil.isNotNullOrEmpty(companyProfile)) {
+                    T_RoleDto roleDto = new T_RoleDto();
+                    //--------------------------------------------------------------------------------------------------
+                    roleDto.setStatusEnabled(true);
+                    //--------------------------------------------------------------------------------------------------
+                    roleDto.setCompanyCode(companyCode);
+                    //--------------------------------------------------------------------------------------------------
+                    roleDto.setRole("Administrator");
+                    //--------------------------------------------------------------------------------------------------
+                    Map<String, Object> role = roleService.save(roleDto);
+                    //==================================================================================================
+                    if (CommonUtil.isNotNullOrEmpty(role)) {
+                        String emailAddress = (String) getResult(companyProfile).get("emailAddress");
+                        //----------------------------------------------------------------------------------------------
+                        String roleCode = (String) getResult(role).get("code");
+                        //----------------------------------------------------------------------------------------------
+                        String password = getDefaultPassword();
+                        //----------------------------------------------------------------------------------------------
+                        T_UserDto userDto = new T_UserDto();
+                        //----------------------------------------------------------------------------------------------
+                        userDto.setStatusEnabled(true);
+                        //----------------------------------------------------------------------------------------------
+                        userDto.setRoleCode(roleCode);
+                        //----------------------------------------------------------------------------------------------
+                        userDto.setUserName(emailAddress);
+                        //----------------------------------------------------------------------------------------------
+                        userDto.setPassword(new PasswordUtil().encryptPassword(password));
+                        //----------------------------------------------------------------------------------------------
+                        Map<String, Object> user = userService.save(userDto);
+                        //----------------------------------------------------------------------------------------------
+                        if (CommonUtil.isNotNullOrEmpty(user)) {
+                            //------------------------------------------------------------------------------------------
+                            List<Integer> listId = new ArrayList<>();
+                            //------------------------------------------------------------------------------------------
+                            listId.add(1);
+                            //------------------------------------------------------------------------------------------
+                            List<M_ModulDto> m_modulDtos = new ArrayList<>();
+                            for (M_Modul m_modul : modulRepo.findByStatusEnabledAndIdIsIn(true, listId)) {
+                                //--------------------------------------------------------------------------------------
+                                M_ModulDto m_modulDto = setModel(m_modul, new M_ModulDto());
+                                //--------------------------------------------------------------------------------------
+                                List<M_ApplicationDto> m_applicationDtos = new ArrayList<>();
+                                for(M_Application m_application : applicationRepo.findAllByStatusEnabledAndModulId(true, m_modul.getId())){
+                                    //----------------------------------------------------------------------------------
+                                    M_ApplicationDto m_applicationDto = setModel(m_application, new M_ApplicationDto());
+                                    //----------------------------------------------------------------------------------
+                                    List<M_ApiRegisterDto> m_apiRegisterDtos = new ArrayList<>();
+                                    for(M_ApiRegister m_apiRegister : apiRegisterRepo.findAllByStatusEnabledAndApplicationId(true, m_application.getId())){
+                                        //------------------------------------------------------------------------------
+                                        M_ApiRegisterDto m_apiRegisterDto = setModel(m_apiRegister, new M_ApiRegisterDto());
+                                        //------------------------------------------------------------------------------
+                                        m_apiRegisterDtos.add(m_apiRegisterDto);
+                                    }
+                                    m_applicationDto.setApiRegister(m_apiRegisterDtos);
+                                    //----------------------------------------------------------------------------------
+                                    m_applicationDtos.add(m_applicationDto);
+                                }
+                                m_modulDto.setApplication(m_applicationDtos);
+                                //--------------------------------------------------------------------------------------
+                                m_modulDtos.add(m_modulDto);
+                            }
+
+                            if(CommonUtil.isNotNullOrEmpty(m_modulDtos)){
+                                T_RoleMenu roleMenu = new T_RoleMenu();
+                                roleMenu.setStatusEnabled(true);
+                                //--------------------------------------------------------------------------------------
+                                roleMenu.setRoleCode(roleCode);
+                                //--------------------------------------------------------------------------------------
+                                roleMenu.setMenuList(listMapToString(listModelToListMap(m_modulDtos)));
+
+                                roleMenuRepo.save(roleMenu);
+                            }
+                        }
+                        //==============================================================================================
+                        emailService.sendEmail("User Default", "Username : " + emailAddress + "\n" + "Password : " + password, emailAddress);
+                    }
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return company;
     }

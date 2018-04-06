@@ -5,5 +5,5 @@ package com.microservice.service;
  * @author reza
  */
 public interface EmailService {
-    void sendEmail(String activationCode, String email);
+    void sendEmail(String subject, String message, String to);
 }

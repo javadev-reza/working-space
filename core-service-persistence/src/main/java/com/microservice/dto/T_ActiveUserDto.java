@@ -17,7 +17,7 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
 public class T_ActiveUserDto extends BaseTransactionDto {
 
     @NotNull(message = COLUMN_NOT_NULL)
-    private String loginUserCode;
+    private String userCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
     private Boolean activeStatus;

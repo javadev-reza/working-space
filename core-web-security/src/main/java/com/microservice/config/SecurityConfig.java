@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.microservice.security.AuthenticateFilter;
 import com.microservice.security.AuthenticateAdapter;
 import com.microservice.security.UnauthorizedEntryPoint;
-import com.microservice.security.UserService;
+import com.microservice.security.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,13 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UnauthorizedEntryPoint unauthorizedEntryPoint;
-    private final UserService userService;
+    private final UserDetailServiceImpl userDetailServiceImpl;
     private final AuthenticateAdapter authenticateAdapter;
 
     public SecurityConfig(){
         super(true);
-        this.userService = new UserService();
-	    this.authenticateAdapter = new AuthenticateAdapter(userService);
+        this.userDetailServiceImpl = new UserDetailServiceImpl();
+	    this.authenticateAdapter = new AuthenticateAdapter(userDetailServiceImpl);
     }
 
     String[] SpringCloudUrl = {
@@ -77,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     String[] MicroServiceUrl = {
         "/sign-in",
-        "/sign-up-mobile"
+        "/company-registration/save"
     };
 
     @Override
@@ -130,8 +130,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public UserService userDetailsService() {
-        return userService;
+    public UserDetailServiceImpl userDetailsService() {
+        return userDetailServiceImpl;
     }
 
     @Bean

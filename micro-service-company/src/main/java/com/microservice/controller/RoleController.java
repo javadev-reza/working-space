@@ -2,8 +2,7 @@ package com.microservice.controller;
 
 import com.microservice.annotation.Modul;
 import com.microservice.annotation.Permission;
-import com.microservice.dto.M_BankDto;
-import com.microservice.dto.M_RoleDto;
+import com.microservice.dto.T_RoleDto;
 import com.microservice.model.PageDto;
 import com.microservice.service.RoleService;
 import com.microservice.util.RestUtil;
@@ -16,8 +15,8 @@ import static com.microservice.constanta.ApplicationConstant.name.*;
 import static com.microservice.enums.Restclient.WEB_APPLICATION;
 
 @RestController
-@Modul(name = "Master")
-@RequestMapping(path = "/role", name = "Master Role")
+@Modul(name = "Company Profile")
+@RequestMapping(path = "/company-role", name = "Roles Registration")
 public class RoleController extends RestUtil {
 
     @Autowired
@@ -25,32 +24,36 @@ public class RoleController extends RestUtil {
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/save", name = SAVE)
-    public @ResponseBody Map save(@RequestBody M_RoleDto dto){
+    public @ResponseBody
+    Map save(@RequestBody T_RoleDto dto){
         return setResponse(roleService.save(dto));
     }
 
     @Permission({WEB_APPLICATION})
-    @PostMapping(path="/update", name = UPDATE)
-    public @ResponseBody Map update(@RequestBody M_RoleDto dto){
+    @PostMapping(path = "/update", name = UPDATE)
+    public @ResponseBody
+    Map update(@RequestBody T_RoleDto dto){
         return setResponse(roleService.update(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/delete", name = DELETE)
-    public @ResponseBody Map delete(@RequestParam Integer id){
-        return setResponse(roleService.delete(id));
+    public @ResponseBody
+    Map delete(@RequestParam String code){
+        return setResponse(roleService.delete(code));
     }
 
     @Permission({WEB_APPLICATION})
-    @GetMapping(path = "/get-one", name = GET_ONE)
-    public @ResponseBody Map getOne(@RequestParam Integer id){
-        return setResponse(roleService.getOne(id));
+    @PostMapping(path = "/get-one", name = GET_ONE)
+    public @ResponseBody
+    Map getOne(@RequestParam String code){
+        return setResponse(roleService.getOne(code));
     }
 
     @Permission({WEB_APPLICATION})
-    @GetMapping(path = "/get-all", name = GET_ALL)
-    public @ResponseBody Map getAll(PageDto dto){
+    @PostMapping(path = "/get-all", name = GET_ALL)
+    public @ResponseBody
+    Map getAll(PageDto dto){
         return setResponse(roleService.getAll(dto));
     }
-
 }

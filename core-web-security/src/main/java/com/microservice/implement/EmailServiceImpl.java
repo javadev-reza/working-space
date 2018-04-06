@@ -1,17 +1,17 @@
 package com.microservice.implement;
 
-import static com.microservice.constanta.WebConstant.JavaxMail.EMAIL_SENDER;
-import static com.microservice.constanta.WebConstant.JavaxMail.HOST;
-import static com.microservice.constanta.WebConstant.JavaxMail.PASSWORD;
 import com.microservice.service.EmailService;
-import static io.jsonwebtoken.Claims.SUBJECT;
+
+import com.microservice.util.CommonUtil;
+import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Properties;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -19,49 +19,79 @@ import javax.mail.internet.MimeMessage;
  * @author reza
  */
 @Service
-public class EmailServiceImpl extends Thread implements EmailService {
+public class EmailServiceImpl implements EmailService {
 
-    private final Properties props = System.getProperties();
-    private String activationCode;
-    private String email;      
-    
-    @Override
-    public void sendEmail(String activationCode, String email){
-        this.activationCode=activationCode;
-        this.email=email;
-        //----------------------------------------------------------------------
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", HOST);
-        props.put("mail.smtp.user", EMAIL_SENDER);
-        props.put("mail.smtp.password", PASSWORD);
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.auth", "true");
-        //----------------------------------------------------------------------
-        this.start();
+    private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
+
+    private String SUBJECT;
+    private String MESSAGE;
+    private String TO;
+
+    @Transactional(readOnly = false)
+    public void sendEmail(String SUBJECT, String MESSAGE, String TO) {
+        this.SUBJECT =SUBJECT;
+        this.MESSAGE =MESSAGE;
+        this.TO =TO;
+        //--------------------------------------------------------------------------------------------------------------
+        if(CommonUtil.isNotNullOrEmpty(SUBJECT) &&
+                CommonUtil.isNotNullOrEmpty(MESSAGE) && CommonUtil.isNotNullOrEmpty(TO)){
+            Emailing email = new Emailing();
+            email.start();
+        }
     }
-    
-    private String Message(){
-        return "Silahkan aktifkan aktifasi berikut: "+activationCode+"\n\n"
-            + "Harap simpan kode tersebut dengan baik, apabila di kemudian hari aplikasi "
-            + "terhapus anda bisa menggunakan kode tersebut untuk aktifasi ulang.\n\nApabila ada "
-            + "pertanyaan silahkan hubungi kami di No: +6281394020154 (Reza).\n\nHormat kami\nPT. Testing.";
-    }
-    
-    @Override
-    public void run(){
-        try{
-            Session session = Session.getDefaultInstance(props, null);
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(EMAIL_SENDER));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            message.setSubject(SUBJECT);
-            message.setText(Message());
-            Transport transport = session.getTransport("smtp");
-            transport.connect(HOST, EMAIL_SENDER, PASSWORD);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-        }catch(MessagingException ex){
-            ex.printStackTrace();
+
+    private class Emailing extends Thread {
+        //--------------------------------------------------------------------------------------------------------------
+        String HOST     = "smtp.gmail.com";
+        String USERNAME = "jcashplay@gmail.com";
+        String PASSWORD = "elisareza";
+        Integer PORT    = 587;
+        //--------------------------------------------------------------------------------------------------------------
+        Properties getMailProperties() {
+            Properties properties = new Properties();
+            properties.put("mail.smtp.host", HOST);
+            properties.put("mail.smtp.user", USERNAME);
+            properties.put("mail.smtp.password", PASSWORD);
+            properties.put("mail.smtp.port", PORT);
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.starttls.required", "true");
+            properties.put("mail.smtp.timeout",3600000);
+            return properties;
+        }
+        //--------------------------------------------------------------------------------------------------------------
+        JavaMailSenderImpl JavaMailSenderImpl() {
+            JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+            javaMailSender.setHost(HOST);
+            javaMailSender.setUsername(USERNAME);
+            javaMailSender.setPassword(PASSWORD);
+            javaMailSender.setPort(PORT);
+            javaMailSender.setJavaMailProperties(getMailProperties());
+            return javaMailSender;
+        }
+        //--------------------------------------------------------------------------------------------------------------
+        @Override
+        public void run() {
+            try {
+                JavaMailSender sender = JavaMailSenderImpl();
+                //------------------------------------------------------------------------------------------------------
+                if(CommonUtil.isNotNullOrEmpty(TO)){
+                    MimeMessage mimeMessage = sender.createMimeMessage();
+                    //--------------------------------------------------------------------------------------------------
+                    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+                    helper.setFrom(USERNAME);
+                    helper.setSubject(SUBJECT);
+                    helper.setText(MESSAGE, false);
+                    helper.addTo(TO);
+                    //--------------------------------------------------------------------------------------------------
+                    sender.send(mimeMessage);
+                    LOGGER.info("pesan telah terkirim");
+                } else{
+                    LOGGER.info("tidak tersedia alamat email tujuan");
+                }
+            } catch (MessagingException ex) {
+                LOGGER.error(ex.getMessage());
+            }
         }
     }
 }

@@ -25,15 +25,6 @@ public class T_Company extends BaseTransaction {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "businessScaleId", insertable = false, updatable = false)
-    private M_BusinessScale businessScale;
-
-    @NotNull(message = COLUMN_NOT_NULL)
-    @Column(name = "businessScaleId", nullable = false)
-    private Integer businessScaleId;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branchCompanyCode", insertable = false, updatable = false)
     private T_Company branchCompany;
 

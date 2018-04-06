@@ -6,7 +6,8 @@ import com.microservice.dto.M_ApplicationDto;
 import com.microservice.dto.M_ModulDto;
 import com.microservice.enums.Restclient;
 import com.microservice.implement.BaseServiceImpl;
-import com.microservice.repository.JobRoleMenuRepo;
+import com.microservice.model.T_RoleMenu;
+import com.microservice.repository.RoleMenuRepo;
 import com.microservice.util.CommonUtil;
 import com.microservice.util.RestExceptionUtil.ForbiddenException;
 import java.lang.reflect.Method;
@@ -31,7 +32,7 @@ import static org.springframework.http.HttpHeaders.FROM;
 public class PermissionInterceptor extends BaseServiceImpl implements HandlerInterceptor {
 
     @Autowired
-    private JobRoleMenuRepo jobRoleMenuRepo;
+    private RoleMenuRepo roleMenuRepo;
 
     private final Logger LOG = LoggerFactory.getLogger(PermissionInterceptor.class);
 
@@ -105,26 +106,34 @@ public class PermissionInterceptor extends BaseServiceImpl implements HandlerInt
 
         Boolean check =
                 URI.contains("/sign-in")
-                || URI.contains("/sign-up-mobile");
+                || URI.contains("/company-registration/save");
 
         if(!check) {
-            if(getSession().getUserCode().equalsIgnoreCase("SU-8181619fa61501619fbfc4ce0001")){
+            if(getSession().getUser().getCode().equalsIgnoreCase("SU-8181619fa61501619fbfc4ce0001")){
                 roleuserValidation = true;
             } else {
-                for (M_ModulDto modulDto :
-                        jsonToModulDto(jobRoleMenuRepo
-                                .findByStatusEnabledAndJobRoleCode(true, getSession().getJobRoleCode()).getMenuList())) {
+                //------------------------------------------------------------------------------------------------------
+                T_RoleMenu roleMenu = roleMenuRepo.findByStatusEnabledAndRoleCode(true, getSession().getRole().getCode());
+                //------------------------------------------------------------------------------------------------------
+                if(CommonUtil.isNotNullOrEmpty(roleMenu)){
                     //--------------------------------------------------------------------------------------------------
-                    for (M_ApplicationDto applicationDto : modulDto.getApplication()) {
+                    for (M_ModulDto modulDto : jsonToModulDto(roleMenu.getMenuList())){
                         //----------------------------------------------------------------------------------------------
-                        for (M_ApiRegisterDto apiRegisterDto : applicationDto.getApiRegister()) {
+                        for (M_ApplicationDto applicationDto : modulDto.getApplication()) {
                             //------------------------------------------------------------------------------------------
-                            if (apiRegisterDto.getLink().contains(URI)) {
-                                roleuserValidation = true;
-                                break;
+                            for (M_ApiRegisterDto apiRegisterDto : applicationDto.getApiRegister()) {
+                                //--------------------------------------------------------------------------------------
+                                if (apiRegisterDto.getLink().contains(URI)) {
+                                    //----------------------------------------------------------------------------------
+                                    roleuserValidation = true;
+                                    //----------------------------------------------------------------------------------
+                                    break;
+                                }
                             }
                         }
                     }
+                } else{
+                    roleuserValidation = false;
                 }
             }
             return restclientValidation && roleuserValidation;

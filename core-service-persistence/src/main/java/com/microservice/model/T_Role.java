@@ -16,21 +16,12 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
 @Getter
 @Setter
 @Entity
-@Table(name="T_JobRole")
-public class T_JobRole extends BaseTransaction {
+@Table(name="T_Role")
+public class T_Role extends BaseTransaction {
 
     @NotNull(message = COLUMN_NOT_NULL)
-    @Column(name = "jobRole", length = 50, nullable = false)
-    private String jobRole;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleId", insertable = false, updatable = false)
-    private M_Role role;
-
-    @NotNull(message = COLUMN_NOT_NULL)
-    @Column(name = "roleId", nullable = false)
-    private Integer roleId;
+    @Column(name = "role", length = 50, nullable = false)
+    private String role;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
