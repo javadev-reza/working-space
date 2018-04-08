@@ -4,6 +4,8 @@ import com.microservice.dto.T_UserProfileDto;
 import com.microservice.model.BaseService;
 import com.microservice.model.T_UserProfile;
 
-public interface UserProfileService extends BaseService<T_UserProfileDto, String>{
+import java.util.Map;
 
+public interface UserProfileService extends BaseService<T_UserProfileDto, String>{
+    Map getOneByUserCode(String userCode);
 }

@@ -3,6 +3,7 @@ package com.microservice.controller;
 import com.microservice.annotation.Modul;
 import com.microservice.annotation.Permission;
 import com.microservice.dto.T_UserDto;
+import com.microservice.dto.UserRegistrationDto;
 import com.microservice.model.PageDto;
 import com.microservice.service.UserService;
 import com.microservice.util.RestUtil;
@@ -25,14 +26,14 @@ public class UserController extends RestUtil {
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/save", name = SAVE)
     public @ResponseBody
-    Map save(@RequestBody T_UserDto dto){
+    Map save(@RequestBody UserRegistrationDto dto){
         return setResponse(userService.save(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/update", name = UPDATE)
     public @ResponseBody
-    Map update(@RequestBody T_UserDto dto){
+    Map update(@RequestBody UserRegistrationDto dto){
         return setResponse(userService.update(dto));
     }
 

@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserProfileRepo extends JpaRepository<T_UserProfile, String> {
     T_UserProfile findByStatusEnabledAndCode(Boolean statusEnabled, String code);
+    T_UserProfile findByStatusEnabledAndUserCode(Boolean statusEnabled, String userCode);
     Page<T_UserProfile> findByStatusEnabledAndAddressIgnoreCaseContaining(Pageable pegeable, Boolean statusEnabled, String address);
 }

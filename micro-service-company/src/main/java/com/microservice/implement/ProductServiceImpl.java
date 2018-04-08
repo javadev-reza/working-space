@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class ProductServiceImpl extends BaseServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepo productRepo;
 
     @Override
     public Map save(T_ProductDto dto) {

@@ -27,20 +27,20 @@ public class CompanyController extends RestUtil {
     @PostMapping(path = "/save", name = SAVE)
     public @ResponseBody
     Map save(@RequestBody CompanyRegistrationDto dto){
-        return setResponse(companyService.registration_add(dto));
+        return setResponse(companyService.save(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/update", name = UPDATE)
     public @ResponseBody
     Map update(@RequestBody CompanyRegistrationDto dto){
-        return setResponse(companyService.registration_update(dto));
+        return setResponse(companyService.update(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/delete", name = DELETE)
     public @ResponseBody
-    Map delete(@RequestBody CompanyRegistrationDto dto){
-        return setResponse(companyService.registration_delete(dto));
+    Map delete(@RequestParam String code){
+        return setResponse(companyService.delete(code));
     }
 }

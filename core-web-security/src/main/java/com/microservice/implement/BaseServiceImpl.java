@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microservice.dto.*;
 import com.microservice.model.*;
+import com.microservice.repository.*;
+import com.microservice.service.EmailService;
 import com.microservice.util.CommonUtil;
 
 import java.lang.reflect.Type;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import com.microservice.util.RestExceptionUtil;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -23,12 +26,46 @@ import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author reza
  */
 public abstract class BaseServiceImpl extends BaseTemp {
+
+    @Autowired
+    public EmailService emailService;
+
+    @Autowired
+    public CompanyRepo companyRepo;
+
+    @Autowired
+    public CompanyProfileRepo companyProfileRepo;
+
+    @Autowired
+    public ModulRepo modulRepo;
+
+    @Autowired
+    public ApplicationRepo applicationRepo;
+
+    @Autowired
+    public ApiRegisterRepo apiRegisterRepo;
+
+    @Autowired
+    public RoleMenuRepo roleMenuRepo;
+
+    @Autowired
+    public ProductRepo productRepo;
+
+    @Autowired
+    public RoleRepo roleRepo;
+
+    @Autowired
+    public UserProfileRepo userProfileRepo;
+
+    @Autowired
+    public UserRepo userRepo;
 
     //------------------------------------------------------------------------------------------------------------------
     public String getGenerateCode() {
@@ -117,15 +154,18 @@ public abstract class BaseServiceImpl extends BaseTemp {
        return (T) new ObjectMapper().convertValue(instance, clazz.getClass());
     }
 
+    //------------------------------------------------------------------------------------------------------------------
     public <T> Map<String, Object> modelToMap(T clazz){
         Type type = new TypeToken<Map<String, Object>>(){}.getType();
         return new Gson().fromJson(new Gson().toJsonTree(clazz), type);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
     public String mapToString(Map<String, Object> hashMap){
         return new Gson().toJson(hashMap);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
     public Map<String, Object> stringToMap(String json){
         Type type = new TypeToken<Map<String, Object>>(){}.getType();
         return new Gson().fromJson(json, type);
@@ -208,6 +248,7 @@ public abstract class BaseServiceImpl extends BaseTemp {
         return group;
     }
 
+    //------------------------------------------------------------------------------------------------------------------
     public List<String> setGroupCode(String getGroupBy){
         List<String> group = new ArrayList<>();
 
@@ -219,5 +260,11 @@ public abstract class BaseServiceImpl extends BaseTemp {
             group.add("");
         }
         return group;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    @Transactional(readOnly = false)
+    public void emailing(String subject, String message, String emailAddress){
+        emailService.sendEmail(subject, message, emailAddress);
     }
 }

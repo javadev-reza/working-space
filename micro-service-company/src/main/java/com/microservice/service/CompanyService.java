@@ -6,8 +6,6 @@ import com.microservice.model.BaseService;
 
 import java.util.Map;
 
-public interface CompanyService extends BaseService<T_CompanyDto, String> {
-    Map registration_add(CompanyRegistrationDto dto);
-    Map registration_update(CompanyRegistrationDto dto);
-    Map registration_delete(CompanyRegistrationDto dto);
+public interface CompanyService extends BaseService<CompanyRegistrationDto, String> {
+
 }

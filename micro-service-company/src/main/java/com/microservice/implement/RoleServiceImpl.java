@@ -16,9 +16,6 @@ import java.util.Map;
 public class RoleServiceImpl extends BaseServiceImpl implements RoleService{
 
 
-    @Autowired
-    private RoleRepo roleRepo;
-
     @Override
     @Transactional(readOnly = false)
     public Map save(T_RoleDto dto) {
