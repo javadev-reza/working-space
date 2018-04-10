@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class CountyTownServiceImpl extends BaseServiceImpl implements CountyTownService {
 
-    @Autowired
-    private CountyTownRepo countyTownRepo;
 
     @Override
     public Map save(M_CountyTownDto dto) {

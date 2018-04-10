@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class DistrictServiceImpl extends BaseServiceImpl implements DistrictService {
 
-    @Autowired
-    private DistrictRepo districtRepo;
 
     @Override
     public Map save(M_DistrictDto dto) {

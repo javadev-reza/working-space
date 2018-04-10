@@ -18,8 +18,6 @@ import java.util.Map;
 @Service
 public class CountryServiceImpl extends BaseServiceImpl implements CountryService {
 
-    @Autowired
-    private CountryRepo countryRepo;
 
     @Override
     public Map save(M_CountryDto dto) {

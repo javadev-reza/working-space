@@ -31,4 +31,5 @@ public class T_Role extends BaseTransaction {
     @NotNull(message = COLUMN_NOT_NULL)
     @Column(name = "companyCode", length = 32, nullable = false)
     private String companyCode;
+
 }

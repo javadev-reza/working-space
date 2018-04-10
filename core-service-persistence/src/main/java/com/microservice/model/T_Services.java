@@ -21,17 +21,17 @@ public class T_Services extends BaseTransaction {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employeeCode", insertable = false, updatable = false)
-    private T_User employee;
+    @JoinColumn(name = "productCode", insertable = false, updatable = false)
+    private T_Product product;
 
     @NotNull(message = COLUMN_NOT_NULL)
-    @Column(name = "employeeCode", length = 32, nullable = false)
-    private String employeeCode;
+    @Column(name = "productCode", length = 32, nullable = false)
+    private String productCode;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerCode", insertable = false, updatable = false)
-    private T_User customer;
+    private T_Customer customer;
 
     @NotNull(message = COLUMN_NOT_NULL)
     @Column(name = "customerCode", length = 32, nullable = false)

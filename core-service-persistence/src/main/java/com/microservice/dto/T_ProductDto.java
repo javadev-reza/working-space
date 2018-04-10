@@ -3,6 +3,7 @@ package com.microservice.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microservice.model.BaseTransaction;
 import com.microservice.model.BaseTransactionDto;
+import com.microservice.model.T_Employee;
 import com.microservice.model.T_User;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class T_ProductDto extends BaseTransactionDto {
     @NotNull(message = COLUMN_NOT_NULL)
     private String product;
 
-    private String userCode;
+    private String employeeCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
     private Double price;

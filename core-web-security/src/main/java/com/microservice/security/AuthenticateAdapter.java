@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author reza
  */
 @Component
-public class AuthenticateAdapter extends BaseServiceImpl{
+public class AuthenticateAdapter extends BaseServiceImpl {
 
     public TokenHandler tokenHandler;
 	

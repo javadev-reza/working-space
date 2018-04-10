@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  *
  * @author Reza
@@ -14,5 +16,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepo extends JpaRepository<T_User, String>{
     T_User findByStatusEnabledAndUserName(Boolean statusEnabled, String userName);
     T_User findByStatusEnabledAndCode(Boolean statusEnabled, String code);
+    List<T_User> findByStatusEnabledAndRoleCode(Boolean statusEnabled, String roleCode);
     Page<T_User> findByStatusEnabledAndUserNameIgnoreCaseContaining(Pageable pageable, Boolean statusEnabled, String userName);
 }

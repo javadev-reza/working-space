@@ -2,7 +2,7 @@ package com.microservice.controller;
 
 import com.microservice.annotation.Modul;
 import com.microservice.annotation.Permission;
-import com.microservice.dto.CompanyRegistrationDto;
+import com.microservice.dto.T_CompanyDto;
 import com.microservice.service.CompanyService;
 import com.microservice.util.RestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,14 @@ public class CompanyController extends RestUtil {
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/save", name = SAVE)
     public @ResponseBody
-    Map save(@RequestBody CompanyRegistrationDto dto){
+    Map save(@RequestBody T_CompanyDto dto){
         return setResponse(companyService.save(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/update", name = UPDATE)
     public @ResponseBody
-    Map update(@RequestBody CompanyRegistrationDto dto){
+    Map update(@RequestBody T_CompanyDto dto){
         return setResponse(companyService.update(dto));
     }
 

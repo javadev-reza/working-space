@@ -1,10 +1,12 @@
 package com.microservice.security;
 
 import com.microservice.dto.T_CompanyDto;
+import com.microservice.dto.T_EmployeeDto;
 import com.microservice.dto.T_RoleDto;
 import com.microservice.dto.T_UserDto;
 import com.microservice.implement.BaseServiceImpl;
 import com.microservice.model.T_Company;
+import com.microservice.model.T_Employee;
 import com.microservice.model.T_Role;
 import com.microservice.model.T_User;
 import com.microservice.repository.CompanyRepo;
@@ -29,15 +31,6 @@ import org.json.JSONException;
 
 public class UserDetailServiceImpl extends BaseServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UserRepo userRepo_;
-
-    @Autowired
-    private RoleRepo roleRepo_;
-
-    @Autowired
-    private CompanyRepo companyRepo_;
-
     private final AccountStatusUserDetailsChecker 
             detailsChecker = new AccountStatusUserDetailsChecker();
 
@@ -51,7 +44,7 @@ public class UserDetailServiceImpl extends BaseServiceImpl implements UserDetail
         //--------------------------------------------------------------------------------------------------------------
         UserDetails userDetails = null;
         //--------------------------------------------------------------------------------------------------------------
-        T_User auth = userRepo_.findByStatusEnabledAndUserName(true, header[0]);
+        T_User auth = userRepo.findByStatusEnabledAndUserName(true, header[0]);
         //--------------------------------------------------------------------------------------------------------------
         if (CommonUtil.isNotNullOrEmpty(auth)) {
             GrantedAuthority authority = new SimpleGrantedAuthority("USER");
@@ -68,26 +61,39 @@ public class UserDetailServiceImpl extends BaseServiceImpl implements UserDetail
         //--------------------------------------------------------------------------------------------------------------
         if (CommonUtil.isNotNullOrEmpty(user)) {
             try {
-                //------------------------------------------------------------------------------------------------------
                 sessJson.put("from", from);
                 //------------------------------------------------------------------------------------------------------
-                sessJson.put("user", modelToMap(setModel(user, new T_UserDto())));
-                //------------------------------------------------------------------------------------------------------
-                if(CommonUtil.isNotNullOrEmpty(user.getRoleCode())){
+                if(CommonUtil.isNotNullOrEmpty(user)){
                     //--------------------------------------------------------------------------------------------------
-                    T_Role role = roleRepo_.findByStatusEnabledAndCode(true, user.getRoleCode());
+                    sessJson.put("user", modelToMap(setModel(user, new T_UserDto())));
                     //--------------------------------------------------------------------------------------------------
-                    sessJson.put("role", modelToMap(setModel(role, new T_RoleDto())));
+                    T_Employee employee = employeeRepo.findByStatusEnabledAndUserCode(true, user.getCode());
                     //--------------------------------------------------------------------------------------------------
-                    if(CommonUtil.isNotNullOrEmpty(role.getCompanyCode())){
-                        T_Company company = companyRepo_.findByStatusEnabledAndCode(true, role.getCompanyCode());
+                    if(CommonUtil.isNotNullOrEmpty(employee)){
                         //----------------------------------------------------------------------------------------------
-                        sessJson.put("company", modelToMap(setModel(company, new T_CompanyDto())));
-                    } else{
-                        sessJson.put("company", modelToMap(setModel(new T_CompanyDto())));
+                        sessJson.put("employee", modelToMap(setModel(employee, new T_EmployeeDto())));
+                        //----------------------------------------------------------------------------------------------
+                        T_Role role = roleRepo.findByStatusEnabledAndCode(true, employee.getRoleCode());
+                        //----------------------------------------------------------------------------------------------
+                        if(CommonUtil.isNotNullOrEmpty(role)){
+                            //------------------------------------------------------------------------------------------
+                            sessJson.put("role", modelToMap(setModel(role, new T_RoleDto())));
+                            //------------------------------------------------------------------------------------------
+                            T_Company company = companyRepo.findByStatusEnabledAndCode(true, role.getCompanyCode());
+                            //------------------------------------------------------------------------------------------
+                            if(CommonUtil.isNotNullOrEmpty(company)){
+                                sessJson.put("company", modelToMap(setModel(company, new T_CompanyDto())));
+                            } else {
+                                sessJson.put("company", modelToMap(setModel(new T_CompanyDto())));
+                            }
+                        } else {
+                            sessJson.put("role", modelToMap(setModel(new T_RoleDto())));
+                        }
+                    } else {
+                        sessJson.put("employee", modelToMap(setModel(new T_EmployeeDto())));
                     }
-                } else{
-                    sessJson.put("role", modelToMap(setModel(new T_RoleDto())));
+                } else {
+                    sessJson.put("user", modelToMap(setModel(new T_UserDto())));
                 }
             } catch (JSONException e) {
                 throw new InternalServerErrorException(e.getMessage());

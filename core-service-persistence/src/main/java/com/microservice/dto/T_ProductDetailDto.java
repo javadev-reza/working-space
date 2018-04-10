@@ -1,5 +1,6 @@
 package com.microservice.dto;
 
+import com.microservice.model.BaseTransactionDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,15 +10,14 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
 
 /**
  *
- * @author reza
+ * @author Reza
  */
 @Getter
 @Setter
-public class SignInDto {
+public class T_ProductDetailDto extends BaseTransactionDto {
+
+    private String productCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
-    private String userName;
-
-    @NotNull(message = COLUMN_NOT_NULL)
-    private String password;
+    private String packet;
 }

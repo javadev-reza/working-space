@@ -4,6 +4,7 @@ import com.microservice.dto.*;
 import com.microservice.model.*;
 import com.microservice.service.*;
 import com.microservice.util.CommonUtil;
+import com.microservice.util.DateUtil;
 import com.microservice.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,9 +24,12 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     @Override
     @Transactional(readOnly = false)
-    public Map save(CompanyRegistrationDto dto) {
+    public Map save(T_CompanyDto dto) {
         //--------------------------------------------------------------------------------------------------------------
         String password = getDefaultPassword();
         //--------------------------------------------------------------------------------------------------------------
@@ -33,25 +37,16 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
         //--------------------------------------------------------------------------------------------------------------
         if(CommonUtil.isNotNullOrEmpty(company)){
             //----------------------------------------------------------------------------------------------------------
-            dto.getCompanyProfile().setCompanyCode(company.getCode());
+            Map<String, Object> role = saveRole(company);
             //----------------------------------------------------------------------------------------------------------
-            T_CompanyProfile companyProfile = companyProfileRepo.save(setModel(dto.getCompanyProfile(), new T_CompanyProfile()));
-            //----------------------------------------------------------------------------------------------------------
-            if (CommonUtil.isNotNullOrEmpty(companyProfile)) {
+            if (CommonUtil.isNotNullOrEmpty(role)) {
                 //------------------------------------------------------------------------------------------------------
-                Map<String, Object> role = saveRole(company);
+                saveRoleMenu(role);
                 //------------------------------------------------------------------------------------------------------
-                if (CommonUtil.isNotNullOrEmpty(role)) {
-                    //--------------------------------------------------------------------------------------------------
-                    saveUser(companyProfile, role, password);
-                    //--------------------------------------------------------------------------------------------------
-                    saveRoleMenu(role);
-                    //--------------------------------------------------------------------------------------------------
-                    emailing(
-                            "User Default",
-                            "Username : " + companyProfile.getEmailAddress() + "\n" + "Password : " + password,
-                            companyProfile.getEmailAddress());
-                }
+                saveUserEmployee(company, password, role);
+                //------------------------------------------------------------------------------------------------------
+                emailing("User Default","Username : " +
+                        company.getEmailAddress() + "\n" + "Password : " + password, company.getEmailAddress());
             }
         }
         return setResult(company);
@@ -59,17 +54,15 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
 
     @Override
     @Transactional(readOnly = false)
-    public Map update(CompanyRegistrationDto dto) {
-        T_Company company = companyRepo.save(setModel(dto.getCompany(), companyRepo.findByStatusEnabledAndCode(true, dto.getCompany().getCode())));
+    public Map update(T_CompanyDto dto) {
+        T_Company company =
+                companyRepo.save(setModel(dto.getCompany(), companyRepo.findByStatusEnabledAndCode(true, dto.getCode())));
         //--------------------------------------------------------------------------------------------------------------
-        if(CommonUtil.isNotNullOrEmpty(company)){
-            //----------------------------------------------------------------------------------------------------------
-            companyProfileRepo.save(setModel(dto.getCompanyProfile(), companyProfileRepo.findByStatusEnabledAndCode(true, dto.getCompanyProfile().getCode())));
-        }
         return setResult(company);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public Map delete(String primary) {
         T_Company company = setModel(companyRepo.findByStatusEnabledAndCode(true, primary));
         //--------------------------------------------------------------------------------------------------------------
@@ -78,7 +71,28 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
         company = companyRepo.save(company);
         //--------------------------------------------------------------------------------------------------------------
         if(CommonUtil.isNotNullOrEmpty(company)){
-            companyProfileRepo.findByStatusEnabledAndCompanyCode(true, company.getCode());
+            //----------------------------------------------------------------------------------------------------------
+            for(T_Role role : roleRepo.findByStatusEnabledAndCompanyCode(true, company.getCode())){
+                //--------------------------------------------------------------------------------------------------
+                role.setStatusEnabled(false);
+                //------------------------------------------------------------------------------------------------------
+                roleRepo.save(role);
+                //------------------------------------------------------------------------------------------------------
+                for(T_User user : userRepo.findByStatusEnabledAndRoleCode(true, role.getCode())){
+                    //--------------------------------------------------------------------------------------------------
+                    user.setStatusEnabled(false);
+                    //--------------------------------------------------------------------------------------------------
+                    userRepo.save(user);
+                    //--------------------------------------------------------------------------------------------------
+                    T_Employee employee = employeeRepo.findByStatusEnabledAndUserCode(true, user.getCode());
+                    //--------------------------------------------------------------------------------------------------
+                    if(CommonUtil.isNotNullOrEmpty(employee)){
+                        employee.setStatusEnabled(false);
+                        //----------------------------------------------------------------------------------------------
+                        employeeRepo.save(employee);
+                    }
+                }
+            }
         }
         return setResult(company);
     }
@@ -111,27 +125,6 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
         roleDto.setRole("Administrator");
         //--------------------------------------------------------------------------------------------------------------
         return roleService.save(roleDto);
-    }
-
-    @Transactional(readOnly = false)
-    public Map<String, Object> saveUser(T_CompanyProfile companyProfile, Map<String, Object> role, String password){
-        String roleCode = (String) getResult(role).get("code");
-        //--------------------------------------------------------------------------------------------------------------
-        T_UserDto userDto = new T_UserDto();
-        //--------------------------------------------------------------------------------------------------------------
-        userDto.setStatusEnabled(true);
-        //--------------------------------------------------------------------------------------------------------------
-        userDto.setRoleCode(roleCode);
-        //--------------------------------------------------------------------------------------------------------------
-        userDto.setUserName(companyProfile.getEmailAddress());
-        //--------------------------------------------------------------------------------------------------------------
-        userDto.setPassword(new PasswordUtil().encryptPassword(password));
-        //--------------------------------------------------------------------------------------------------------------
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        //--------------------------------------------------------------------------------------------------------------
-        userRegistrationDto.setUser(userDto);
-        //--------------------------------------------------------------------------------------------------------------
-        return userService.save(userRegistrationDto);
     }
 
     @Transactional(readOnly = false)
@@ -184,6 +177,41 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
             roleMenu.setMenuList(listMapToString(listModelToListMap(m_modulDtos)));
             //----------------------------------------------------------------------------------------------------------
             roleMenuRepo.save(roleMenu);
+        }
+    }
+
+    @Transactional(readOnly = false)
+    public void saveUserEmployee(T_Company company, String password, Map<String, Object> role){
+        String roleCode = (String) getResult(role).get("code");
+        //--------------------------------------------------------------------------------------------------------------
+        T_UserDto userDto = new T_UserDto();
+        //--------------------------------------------------------------------------------------------------------------
+        userDto.setStatusEnabled(true);
+        //--------------------------------------------------------------------------------------------------------------
+        userDto.setUserName(company.getEmailAddress());
+        //--------------------------------------------------------------------------------------------------------------
+        userDto.setPassword(new PasswordUtil().encryptPassword(password));
+        //--------------------------------------------------------------------------------------------------------------
+        Map<String, Object> user = userService.save(userDto);
+
+        if(CommonUtil.isNotNullOrEmpty(user)) {
+            String userCode = (String) getResult(user).get("code");
+            //--------------------------------------------------------------------------------------------------------------
+            T_EmployeeDto employeeDto = new T_EmployeeDto();
+            //--------------------------------------------------------------------------------------------------------------
+            employeeDto.setUserCode(userCode);
+            //--------------------------------------------------------------------------------------------------------------
+            employeeDto.setRoleCode(roleCode);
+            //--------------------------------------------------------------------------------------------------------------
+            employeeDto.setFirstName("Administrator");
+            //--------------------------------------------------------------------------------------------------------------
+            employeeDto.setPhoneNumber("-");
+            //--------------------------------------------------------------------------------------------------------------
+            employeeDto.setEmailAddress(company.getEmailAddress());
+            //--------------------------------------------------------------------------------------------------------------
+            employeeDto.setDateJoined(DateUtil.now());
+            //--------------------------------------------------------------------------------------------------------------
+            employeeService.save(employeeDto);
         }
     }
 

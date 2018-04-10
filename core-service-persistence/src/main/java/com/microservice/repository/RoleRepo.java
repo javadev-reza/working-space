@@ -7,8 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RoleRepo extends JpaRepository<T_Role, String> {
     T_Role findByStatusEnabledAndCode(Boolean statusEnabled, String code);
+    List<T_Role> findByStatusEnabledAndCompanyCode(Boolean statusEnabled, String companyCode);
     Page<T_Role> findByStatusEnabledAndCompanyCodeAndRoleIgnoreCaseContaining(Pageable pageable, Boolean statusEnabled, String companyCode, String role);
 }

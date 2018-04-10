@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class ReligionServiceImpl extends BaseServiceImpl implements ReligionService {
 
-    @Autowired
-    private ReligionRepo religionRepo;
 
     @Override
     public Map save(M_ReligionDto dto) {

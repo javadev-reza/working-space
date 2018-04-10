@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Service
 public class GenericServiceImpl extends BaseServiceImpl implements GenericService {
-    
-    @Autowired
-    private GenericRepo genericRepo;
+
     
     @Override
     public Map getAll(Integer page, Integer size, String className, String fields, String criteria, String value) {

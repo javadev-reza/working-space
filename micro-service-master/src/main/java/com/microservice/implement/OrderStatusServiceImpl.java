@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class OrderStatusServiceImpl extends BaseServiceImpl implements OrderStatusService {
 
-    @Autowired
-    private OrderStatusRepo orderStatusRepo;
 
     @Override
     public Map save(M_OrderStatusDto dto) {

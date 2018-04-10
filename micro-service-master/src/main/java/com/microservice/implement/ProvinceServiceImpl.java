@@ -16,8 +16,6 @@ import java.util.Map;
 @Service
 public class ProvinceServiceImpl extends BaseServiceImpl implements ProvinceService {
 
-    @Autowired
-    private ProvinceRepo provinceRepo;
 
     @Override
     public Map save(M_ProvinceDto dto) {

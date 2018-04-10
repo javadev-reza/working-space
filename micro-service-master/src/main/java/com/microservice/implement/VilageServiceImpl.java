@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class VilageServiceImpl extends BaseServiceImpl implements VilageService {
 
-    @Autowired
-    private VilageRepo vilageRepo;
 
     @Override
     public Map save(M_VilageDto dto) {

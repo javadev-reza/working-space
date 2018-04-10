@@ -1,6 +1,6 @@
 package com.microservice.service;
 
-import com.microservice.dto.SignInDto;
+import com.microservice.dto.custom.SignInDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;

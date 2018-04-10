@@ -14,8 +14,6 @@ import java.util.Map;
 @Service
 public class GenderServiceImpl extends BaseServiceImpl implements GenderService {
 
-    @Autowired
-    private GenderRepo genderRepo;
 
     @Override
     public Map save(M_GenderDto dto) {

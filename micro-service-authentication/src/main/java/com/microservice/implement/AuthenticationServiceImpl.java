@@ -1,6 +1,6 @@
 package com.microservice.implement;
 
-import com.microservice.dto.SignInDto;
+import com.microservice.dto.custom.SignInDto;
 import com.microservice.model.*;
 import com.microservice.repository.*;
 import com.microservice.security.UserAuthentication;

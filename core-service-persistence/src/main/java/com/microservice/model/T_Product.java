@@ -28,10 +28,10 @@ public class T_Product extends BaseTransaction {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userCode", insertable = false, updatable = false)
-    private T_User user;
+    private T_Employee employee;
 
-    @Column(name = "userCode", length = 32, nullable = true)
-    private String userCode;
+    @Column(name = "employeeCode", length = 32, nullable = true)
+    private String employeeCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
     @Column(name = "price", nullable = false)

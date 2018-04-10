@@ -1,15 +1,30 @@
 package com.microservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.microservice.model.BaseTransactionDto;
+import com.microservice.model.M_Gender;
+import com.microservice.model.T_User;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT_NULL;
 
+/**
+ *
+ * @author Reza
+ */
 @Getter
 @Setter
-public class SignUpMobileDto {
+public class T_CustomerDto extends BaseTransactionDto {
+
+    private String userCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
     private String firstName;
@@ -22,9 +37,8 @@ public class SignUpMobileDto {
     @NotNull(message = COLUMN_NOT_NULL)
     private String emailAddress;
 
-    @NotNull(message = COLUMN_NOT_NULL)
-    private String userName;
+    private Integer genderId;
 
     @NotNull(message = COLUMN_NOT_NULL)
-    private String password;
+    private Date dateJoined;
 }

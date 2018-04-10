@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.microservice.dto.*;
+import com.microservice.dto.custom.SessionDto;
 import com.microservice.model.*;
-import com.microservice.repository.*;
-import com.microservice.service.EmailService;
+import com.microservice.service.BaseRepository;
 import com.microservice.util.CommonUtil;
 
 import java.lang.reflect.Type;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import com.microservice.util.RestExceptionUtil;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -32,40 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author reza
  */
-public abstract class BaseServiceImpl extends BaseTemp {
-
-    @Autowired
-    public EmailService emailService;
-
-    @Autowired
-    public CompanyRepo companyRepo;
-
-    @Autowired
-    public CompanyProfileRepo companyProfileRepo;
-
-    @Autowired
-    public ModulRepo modulRepo;
-
-    @Autowired
-    public ApplicationRepo applicationRepo;
-
-    @Autowired
-    public ApiRegisterRepo apiRegisterRepo;
-
-    @Autowired
-    public RoleMenuRepo roleMenuRepo;
-
-    @Autowired
-    public ProductRepo productRepo;
-
-    @Autowired
-    public RoleRepo roleRepo;
-
-    @Autowired
-    public UserProfileRepo userProfileRepo;
-
-    @Autowired
-    public UserRepo userRepo;
+public abstract class BaseServiceImpl extends BaseRepository {
 
     //------------------------------------------------------------------------------------------------------------------
     public String getGenerateCode() {

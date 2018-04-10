@@ -14,9 +14,6 @@ import java.util.Map;
 @Service
 public class BankServiceImpl extends BaseServiceImpl implements BankService {
 
-    @Autowired
-    private BankRepo bankRepo;
-
     @Override
     public Map save(M_BankDto dto) {
         M_Bank bank = setModel(dto, new M_Bank());

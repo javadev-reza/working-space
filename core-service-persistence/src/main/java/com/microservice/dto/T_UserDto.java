@@ -16,8 +16,6 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
 @Setter
 public class T_UserDto extends BaseTransactionDto {
 
-    private String roleCode;
-
     @NotNull(message = COLUMN_NOT_NULL)
     private String userName;
 

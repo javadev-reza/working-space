@@ -17,14 +17,27 @@ import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT
  */
 @Getter
 @Setter
-public class T_UserProfileDto extends BaseTransactionDto {
+public class T_EmployeeDto extends BaseTransactionDto {
 
     private String userCode;
+
+    @NotNull(message = COLUMN_NOT_NULL)
+    private String roleCode;
 
     @NotNull(message = COLUMN_NOT_NULL)
     private String firstName;
 
     private String lastName;
+
+    private Integer countryId;
+
+    private Integer provinceId;
+
+    private Integer countyTownId;
+
+    private Integer districtId;
+
+    private Integer vilageId;
 
     private String address;
 
