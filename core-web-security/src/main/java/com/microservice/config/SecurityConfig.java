@@ -77,7 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     String[] MicroServiceUrl = {
         "/sign-in",
-        "/company-registration/save"
+        "/company-registration/save",
+        "/country/get-all"
     };
 
     @Override

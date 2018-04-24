@@ -6,6 +6,7 @@ import com.microservice.service.*;
 import com.microservice.util.CommonUtil;
 import com.microservice.util.DateUtil;
 import com.microservice.util.PasswordUtil;
+import com.microservice.util.RestExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -33,23 +34,31 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
         //--------------------------------------------------------------------------------------------------------------
         String password = getDefaultPassword();
         //--------------------------------------------------------------------------------------------------------------
-        T_Company company = companyRepo.save(setModel(dto.getCompany(), new T_Company()));
+        dto.setDateJoined(DateUtil.now());
         //--------------------------------------------------------------------------------------------------------------
-        if(CommonUtil.isNotNullOrEmpty(company)){
+        if(CommonUtil.isNullOrEmpty(
+                companyRepo.findByStatusEnabledAndCompanyOrEmailAddress(true, dto.getCompany(), dto.getEmailAddress()))){
             //----------------------------------------------------------------------------------------------------------
-            Map<String, Object> role = saveRole(company);
+            T_Company company = companyRepo.save(setModel(dto, new T_Company()));
             //----------------------------------------------------------------------------------------------------------
-            if (CommonUtil.isNotNullOrEmpty(role)) {
+            if (CommonUtil.isNotNullOrEmpty(company)) {
                 //------------------------------------------------------------------------------------------------------
-                saveRoleMenu(role);
+                Map<String, Object> role = saveRole(company);
                 //------------------------------------------------------------------------------------------------------
-                saveUserEmployee(company, password, role);
-                //------------------------------------------------------------------------------------------------------
-                emailing("User Default","Username : " +
-                        company.getEmailAddress() + "\n" + "Password : " + password, company.getEmailAddress());
+                if (CommonUtil.isNotNullOrEmpty(role)) {
+                    //--------------------------------------------------------------------------------------------------
+                    saveRoleMenu(role);
+                    //--------------------------------------------------------------------------------------------------
+                    saveUserEmployee(company, password, role);
+                    //--------------------------------------------------------------------------------------------------
+                    emailing("User Default", "Username : " +
+                            company.getEmailAddress() + "\n" + "Password : " + password, company.getEmailAddress());
+                }
             }
+            return setResult(company);
+        } else {
+            throw new RestExceptionUtil.ForbiddenException("Company/Email Address is already registered");
         }
-        return setResult(company);
     }
 
     @Override
@@ -78,19 +87,18 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
                 //------------------------------------------------------------------------------------------------------
                 roleRepo.save(role);
                 //------------------------------------------------------------------------------------------------------
-                for(T_User user : userRepo.findByStatusEnabledAndRoleCode(true, role.getCode())){
+
+                for(T_Employee employee : employeeRepo.findByStatusEnabledAndRoleCode(true, role.getCode())){
+                    //--------------------------------------------------------------------------------------------------
+                    employee.setStatusEnabled(false);
+                    //--------------------------------------------------------------------------------------------------
+                    employeeRepo.save(employee);
+
+                    T_User user = userRepo.findByStatusEnabledAndCode(true, employee.getUserCode());
                     //--------------------------------------------------------------------------------------------------
                     user.setStatusEnabled(false);
                     //--------------------------------------------------------------------------------------------------
                     userRepo.save(user);
-                    //--------------------------------------------------------------------------------------------------
-                    T_Employee employee = employeeRepo.findByStatusEnabledAndUserCode(true, user.getCode());
-                    //--------------------------------------------------------------------------------------------------
-                    if(CommonUtil.isNotNullOrEmpty(employee)){
-                        employee.setStatusEnabled(false);
-                        //----------------------------------------------------------------------------------------------
-                        employeeRepo.save(employee);
-                    }
                 }
             }
         }
@@ -134,6 +142,7 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
         List<Integer> listId = new ArrayList<>();
         //--------------------------------------------------------------------------------------------------------------
         listId.add(1);
+        listId.add(2);
         //--------------------------------------------------------------------------------------------------------------
         List<M_ModulDto> m_modulDtos = new ArrayList<>();
         //--------------------------------------------------------------------------------------------------------------
@@ -196,21 +205,23 @@ public class CompanyServiceImpl extends BaseServiceImpl implements CompanyServic
 
         if(CommonUtil.isNotNullOrEmpty(user)) {
             String userCode = (String) getResult(user).get("code");
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             T_EmployeeDto employeeDto = new T_EmployeeDto();
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
+            employeeDto.setStatusEnabled(true);
+            //----------------------------------------------------------------------------------------------------------
             employeeDto.setUserCode(userCode);
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             employeeDto.setRoleCode(roleCode);
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             employeeDto.setFirstName("Administrator");
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             employeeDto.setPhoneNumber("-");
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             employeeDto.setEmailAddress(company.getEmailAddress());
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             employeeDto.setDateJoined(DateUtil.now());
-            //--------------------------------------------------------------------------------------------------------------
+            //----------------------------------------------------------------------------------------------------------
             employeeService.save(employeeDto);
         }
     }

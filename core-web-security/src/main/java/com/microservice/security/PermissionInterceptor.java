@@ -106,7 +106,9 @@ public class PermissionInterceptor extends BaseServiceImpl implements HandlerInt
 
         Boolean check =
                 URI.contains("/sign-in")
-                || URI.contains("/company-registration/save");
+                || URI.contains("/sign-out")
+                || URI.contains("/company-registration/save")
+                || URI.contains("/country/get-all");
 
         if(!check) {
             if(getSession().getUser().getCode().equalsIgnoreCase("SU-8181619fa61501619fbfc4ce0001")){

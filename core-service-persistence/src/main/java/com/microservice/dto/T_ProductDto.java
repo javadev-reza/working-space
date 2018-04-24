@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 import static com.microservice.constanta.WebConstant.ValueMessageInfo.COLUMN_NOT_NULL;
 
@@ -39,4 +40,6 @@ public class T_ProductDto extends BaseTransactionDto {
     private Date promoExp;
 
     private Double tax;
+
+    private List<T_ProductDetailDto> productDetail;
 }

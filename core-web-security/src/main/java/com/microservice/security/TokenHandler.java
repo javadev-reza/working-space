@@ -9,20 +9,22 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import org.springframework.security.core.userdetails.User;
 
-import static com.microservice.constanta.WebConstant.JavaxMail.*;
+import static com.microservice.constanta.WebConstant.SecretCode.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  *
  * @author reza
  */
-public class TokenHandler extends BaseServiceImpl{
+public class TokenHandler extends BaseServiceImpl {
 
-    private final UserDetailServiceImpl userDetailServiceImpl;
+    private UserDetailServiceImpl userDetailServiceImpl;
 
     public TokenHandler(UserDetailServiceImpl userDetailServiceImpl) {
         this.userDetailServiceImpl = userDetailServiceImpl;
     }
+
+    public TokenHandler(){}
 
     public User tokenValidator(String authorization, String from) {
         User user = null;

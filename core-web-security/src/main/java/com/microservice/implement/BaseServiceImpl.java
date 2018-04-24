@@ -1,7 +1,9 @@
 package com.microservice.implement;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.microservice.dto.*;
 import com.microservice.dto.custom.SessionDto;
@@ -91,14 +93,14 @@ public abstract class BaseServiceImpl extends BaseRepository {
 
     //------------------------------------------------------------------------------------------------------------------
     public SessionDto getSession() {
-        SessionDto sessionDto = new SessionDto();
         //--------------------------------------------------------------------------------------------------------------
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //--------------------------------------------------------------------------------------------------------------
         if (CommonUtil.isNotNullOrEmpty(principal)) {
-            sessionDto = mapToModel(stringToMap(principal.toString()), new SessionDto());
+            return (SessionDto) mapToModel(stringToMap(principal.toString()), new TypeToken<SessionDto>(){}.getType());
+        } else{
+            return new SessionDto();
         }
-        return sessionDto;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -116,42 +118,49 @@ public abstract class BaseServiceImpl extends BaseRepository {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public <T> T mapToModel(Object instance, T clazz){
-       return (T) new ObjectMapper().convertValue(instance, clazz.getClass());
+    public <T> T mapToModel(Map map, Type type){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.fromJson(gson.toJsonTree(map), type);
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public <T> Map<String, Object> modelToMap(T clazz){
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
-        return new Gson().fromJson(new Gson().toJsonTree(clazz), type);
+    public <T> Map modelToMap(T clazz){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.fromJson(gson.toJsonTree(clazz), new TypeToken<Map>(){}.getType());
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public String mapToString(Map<String, Object> hashMap){
-        return new Gson().toJson(hashMap);
+    public String mapToString(Map map){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.toJson(map);
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public Map<String, Object> stringToMap(String json){
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
-        return new Gson().fromJson(json, type);
+    public Map stringToMap(String json){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.fromJson(json, new TypeToken<Map>(){}.getType());
     }
 
     //------------------------------------------------------------------------------------------------------------------
     public <T> List<Map> listModelToListMap(List<T> listClazz){
-        Type type = new TypeToken<List<Map<String, Object>>>(){}.getType();
-        return new Gson().fromJson(new Gson().toJsonTree(listClazz), type);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.fromJson(gson.toJsonTree(listClazz), new TypeToken<List<Map>>(){}.getType());
     }
-
+    //------------------------------------------------------------------------------------------------------------------
+    public <T> List<Map> listMapToListModel(List<Map> listClazz){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.fromJson(gson.toJsonTree(listClazz), new TypeToken<T>(){}.getType());
+    }
     //------------------------------------------------------------------------------------------------------------------
     public <T> String listMapToString(List<T> listClazz){
-        return new Gson().toJson(listClazz);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.toJson(listClazz);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     public List<M_ModulDto> jsonToModulDto(String instance){
-        Type type = new TypeToken<List<M_ModulDto>>() {}.getType();
-        return new Gson().fromJson(instance, type);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        return gson.fromJson(instance, new TypeToken<List<M_ModulDto>>() {}.getType());
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -185,12 +194,16 @@ public abstract class BaseServiceImpl extends BaseRepository {
         if(CommonUtil.isNotNullOrEmpty(model)) {
             if (model instanceof org.springframework.data.domain.Page) {
                 result.put("result", setResultPage((Page) model));
-            } else if (model instanceof Map){
-                result.put("result", modelToMap(model));
-            } else if(model instanceof List){
-                result.put("result", modelToMap(model));
+                //------------------------------------------------------------------------------------------------------
             } else {
-                result.put("result", modelToMap(model));
+                //------------------------------------------------------------------------------------------------------
+                if(model instanceof T_User){
+                    Map<String, Object> user = modelToMap(model);
+                    user.replace("password", "-");
+                    result.put("result", user);
+                } else {
+                    result.put("result", model);
+                }
             }
         }
         return result;

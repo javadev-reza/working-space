@@ -1,14 +1,9 @@
 package com.microservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microservice.model.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import java.util.Date;

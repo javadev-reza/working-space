@@ -7,6 +7,7 @@ package com.microservice.constanta;
 public class WebConstant {
     
     public static final class Header {
+        public static final String ROOT_URL = "http://localhost:8763/";
         public static final String CONTENT_TYPE = "Content-Type";
     }
     
@@ -32,9 +33,11 @@ public class WebConstant {
     }
     
     public static final class SecretCode {
-        public static final String TOKEN_KEY = "f8Uua6KQcfRvdlqkkMKs6I+nK7Y=$FzfIaIar3fo=";
-        public static final String ROOT = "ROOT";
-        public static final String ROOT_PASSWORD = "HELLO WORLD";
+        public static final String LEVEL_1   = "BfSFnfaqj//vwtwz99hhQg01nBM=$61xJk5FPEME=";
+        public static final String LEVEL_2   = "ZJQOmzYizyP1GVbFgeI9SHW+SnKcFIP98wykXL8Q72Q=";
+        public static final String SIGNATURE = "NHwOHmZscmKc+VMKjIpNjJlBrpQ=$qQyrE73k2gg=";
+        public static final String SECRET    = "wTMoESNFTcTcnDpnBhoBnho9H48=$NoXuyO4Stvk=";
+        public static final long EXPIRATIONTIME = 432_000_000;
     }
     
     public static final class DeclareVariable{
@@ -45,10 +48,5 @@ public class WebConstant {
         public static final String HOST = "smtp.gmail.com";
         public static final String EMAIL_SENDER = "jcashplay@gmail.com";
         public static final String PASSWORD = "elisareza";
-        public static final String LEVEL_1   = "BfSFnfaqj//vwtwz99hhQg01nBM=$61xJk5FPEME=";
-        public static final String LEVEL_2   = "ZJQOmzYizyP1GVbFgeI9SHW+SnKcFIP98wykXL8Q72Q=";
-        public static final String SIGNATURE = "NHwOHmZscmKc+VMKjIpNjJlBrpQ=$qQyrE73k2gg=";
-        public static final String SECRET    = "wTMoESNFTcTcnDpnBhoBnho9H48=$NoXuyO4Stvk=";
-        public static final long EXPIRATIONTIME = 432_000_000;
     }
 }

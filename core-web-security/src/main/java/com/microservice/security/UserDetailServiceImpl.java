@@ -9,15 +9,11 @@ import com.microservice.model.T_Company;
 import com.microservice.model.T_Employee;
 import com.microservice.model.T_Role;
 import com.microservice.model.T_User;
-import com.microservice.repository.CompanyRepo;
-import com.microservice.repository.RoleRepo;
-import com.microservice.repository.UserRepo;
 import com.microservice.util.CommonUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.microservice.util.RestExceptionUtil.InternalServerErrorException;
 import com.microservice.util.RestExceptionUtil.NotFoundException;
-import org.json.JSONException;
 
 public class UserDetailServiceImpl extends BaseServiceImpl implements UserDetailsService {
 
@@ -95,7 +90,7 @@ public class UserDetailServiceImpl extends BaseServiceImpl implements UserDetail
                 } else {
                     sessJson.put("user", modelToMap(setModel(new T_UserDto())));
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 throw new InternalServerErrorException(e.getMessage());
             }
         }

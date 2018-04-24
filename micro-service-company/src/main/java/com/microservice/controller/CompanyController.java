@@ -16,8 +16,8 @@ import static com.microservice.constanta.ApplicationConstant.name.UPDATE;
 import static com.microservice.enums.Restclient.WEB_APPLICATION;
 
 @RestController
-@Modul(name = "Company Profile")
-@RequestMapping(path = "/company-registration", name = "Company Registration")
+@Modul(name = "Company")
+@RequestMapping(path = "/company", name = "Company")
 public class CompanyController extends RestUtil {
 
     @Autowired

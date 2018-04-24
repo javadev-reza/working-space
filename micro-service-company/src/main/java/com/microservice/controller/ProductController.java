@@ -2,9 +2,9 @@ package com.microservice.controller;
 
 import com.microservice.annotation.Modul;
 import com.microservice.annotation.Permission;
-import com.microservice.dto.T_EmployeeDto;
+import com.microservice.dto.T_ProductDto;
 import com.microservice.model.PageDto;
-import com.microservice.service.EmployeeService;
+import com.microservice.service.ProductService;
 import com.microservice.util.RestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,49 +12,48 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 import static com.microservice.constanta.ApplicationConstant.name.*;
-import static com.microservice.constanta.ApplicationConstant.name.GET_ALL;
 import static com.microservice.enums.Restclient.WEB_APPLICATION;
 
 @RestController
 @Modul(name = "Company")
-@RequestMapping(path = "/employee", name = "Employee")
-public class EmployeeController extends RestUtil {
+@RequestMapping(path = "/product", name = "Product")
+public class ProductController extends RestUtil {
 
     @Autowired
-    private EmployeeService employeeService;
+    private ProductService productService;
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/save", name = SAVE)
     public @ResponseBody
-    Map save(@RequestBody T_EmployeeDto dto){
-        return setResponse(employeeService.save(dto));
+    Map save(@RequestBody T_ProductDto dto){
+        return setResponse(productService.save(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/update", name = UPDATE)
     public @ResponseBody
-    Map update(@RequestBody T_EmployeeDto dto){
-        return setResponse(employeeService.update(dto));
+    Map update(@RequestBody T_ProductDto dto){
+        return setResponse(productService.update(dto));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/delete", name = DELETE)
     public @ResponseBody
     Map delete(@RequestParam String code){
-        return setResponse(employeeService.delete(code));
+        return setResponse(productService.delete(code));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/get-one", name = GET_ONE)
     public @ResponseBody
     Map getOne(@RequestParam String code){
-        return setResponse(employeeService.getOne(code));
+        return setResponse(productService.getOne(code));
     }
 
     @Permission({WEB_APPLICATION})
     @PostMapping(path = "/get-all", name = GET_ALL)
     public @ResponseBody
     Map getAll(PageDto dto){
-        return setResponse(employeeService.getAll(dto));
+        return setResponse(productService.getAll(dto));
     }
 }

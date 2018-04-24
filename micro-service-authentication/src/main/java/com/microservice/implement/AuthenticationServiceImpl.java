@@ -3,6 +3,7 @@ package com.microservice.implement;
 import com.microservice.dto.custom.SignInDto;
 import com.microservice.model.*;
 import com.microservice.repository.*;
+import com.microservice.security.TokenHandler;
 import com.microservice.security.UserAuthentication;
 import com.microservice.security.AuthenticateAdapter;
 import com.microservice.service.AuthenticationService;
@@ -51,6 +52,21 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         return activeUser;
     }
 
+    public Map setAuthResult( T_User user, T_ActiveUser activeUser, UserAuthentication authentication){
+
+        activeUser.setActiveStatus(true);
+        //--------------------------------------------------------------------------------------------------------------
+        statusActive(activeUser.getUserCode());
+        //--------------------------------------------------------------------------------------------------------------
+        Map<String, Object> userData = setResult(user);
+        //--------------------------------------------------------------------------------------------------------------
+        Map<String, Object> rerult = (Map<String, Object>) userData.get("result");
+        //--------------------------------------------------------------------------------------------------------------
+        rerult.put("authorization", new TokenHandler().tokenGenerator(authentication.getDetails()));
+        //--------------------------------------------------------------------------------------------------------------
+        return setResult(rerult);
+    }
+
     @Override
     @Transactional(readOnly = false)
     public Map signIn(HttpServletResponse response, SignInDto dto){
@@ -69,36 +85,29 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         if (CommonUtil.isNotNullOrEmpty(user)){
             //----------------------------------------------------------------------------------------------------------
             if (new PasswordUtil().isPasswordEqual(dto.getPassword(), user.getPassword())){
+                GrantedAuthority authority = new SimpleGrantedAuthority("USER");
+                UserAuthentication authentication = new UserAuthentication(new User(user.getUserName(), user.getPassword(), Arrays.asList(authority)));
 
                 if(user.getCode().equalsIgnoreCase("SU-8181619fa61501619fbfc4ce0001")){
-                    GrantedAuthority authority = new SimpleGrantedAuthority("USER");
-                    //----------------------------------------------------------------------------------------------
-                    Boolean isValidToken = authenticateAdapter.tokenGeneratorAdapter(response, new UserAuthentication(
-                            new User(user.getUserName(), user.getPassword(), Arrays.asList(authority))));
+                    T_ActiveUser activeUser = statusActive(user.getCode());
                     //--------------------------------------------------------------------------------------------------
-                    if (isValidToken) {
-                        Map<String, Object> userData = setResult(user);
+                    if (activeUser.getActiveStatus() || !activeUser.getActiveStatus()) {
                         //----------------------------------------------------------------------------------------------
-                        result = userData;
+                        Boolean isValidToken = authenticateAdapter.tokenGeneratorAdapter(response, authentication);
+                        //----------------------------------------------------------------------------------------------
+                        if (isValidToken) {
+                            result = setAuthResult(user, activeUser, authentication);;
+                        }
                     }
                 } else {
                     T_ActiveUser activeUser = statusActive(user.getCode());
-
+                    //--------------------------------------------------------------------------------------------------
                     if (!activeUser.getActiveStatus()) {
-                        GrantedAuthority authority = new SimpleGrantedAuthority("USER");
                         //----------------------------------------------------------------------------------------------
-                        Boolean isValidToken = authenticateAdapter.tokenGeneratorAdapter(response, new UserAuthentication(
-                                new User(user.getUserName(), user.getPassword(), Arrays.asList(authority))));
-
+                        Boolean isValidToken = authenticateAdapter.tokenGeneratorAdapter(response, authentication);
+                        //----------------------------------------------------------------------------------------------
                         if (isValidToken) {
-                            activeUser.setActiveStatus(true);
-                            //------------------------------------------------------------------------------------------
-                            activeUserRepo.save(activeUser);
-                            //------------------------------------------------------------------------------------------
-                            Map<String, Object> userData = setResult(user);
-
-                            //------------------------------------------------------------------------------------------
-                            result = userData;
+                            result = setAuthResult(user, activeUser, authentication);
                         }
                     } else {
                         throw new ForbiddenException("User does not have access privileges");
@@ -133,4 +142,6 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         //--------------------------------------------------------------------------------------------------------------
         return setResult(activeUser);
     }
+
+
 }

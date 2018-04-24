@@ -89,4 +89,6 @@ public class BaseRepository extends BaseTemp {
     @Autowired
     public EmailService emailService;
 
+
+
 }

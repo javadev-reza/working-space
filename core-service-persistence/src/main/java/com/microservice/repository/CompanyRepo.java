@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyRepo extends JpaRepository<T_Company, String> {
     T_Company findByStatusEnabledAndCode(Boolean statusEnabled, String code);
+    T_Company findByStatusEnabledAndCompanyOrEmailAddress(Boolean statusEnabled, String company, String emailAddress);
     Page<T_Company> findByStatusEnabledAndCompanyIgnoreCaseContaining(Pageable pageable, Boolean statusEnabled, String company);
 }

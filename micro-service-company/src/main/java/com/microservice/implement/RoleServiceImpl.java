@@ -17,7 +17,6 @@ public class RoleServiceImpl extends BaseServiceImpl implements RoleService{
 
 
     @Override
-    @Transactional(readOnly = false)
     public Map save(T_RoleDto dto) {
         T_Role role = setModel(dto, new T_Role());
         //--------------------------------------------------------------------------------------------------------------
@@ -25,7 +24,6 @@ public class RoleServiceImpl extends BaseServiceImpl implements RoleService{
     }
 
     @Override
-    @Transactional(readOnly = false)
     public Map update(T_RoleDto dto) {
         T_Role role = setModel(dto,
                 roleRepo.findByStatusEnabledAndCode(true, dto.getCode()));

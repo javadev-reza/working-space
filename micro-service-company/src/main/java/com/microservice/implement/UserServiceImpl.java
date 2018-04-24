@@ -4,9 +4,11 @@ import com.microservice.dto.T_UserDto;
 import com.microservice.model.PageDto;
 import com.microservice.model.T_User;
 import com.microservice.service.UserService;
+import com.microservice.util.CommonUtil;
+import com.microservice.util.PasswordUtil;
+import com.microservice.util.RestExceptionUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -15,9 +17,15 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public Map save(T_UserDto dto) {
-        T_User user = userRepo.save(setModel(dto, new T_User()));
-        //--------------------------------------------------------------------------------------------------------------
-        return setResult(userRepo.save(user));
+        if(CommonUtil.isNullOrEmpty(userRepo.findByStatusEnabledAndUserName(true, dto.getUserName()))) {
+            dto.setPassword(new PasswordUtil().encryptPassword(dto.getPassword()));
+            //--------------------------------------------------------------------------------------------------------------
+            T_User user = userRepo.save(setModel(dto, new T_User()));
+            //--------------------------------------------------------------------------------------------------------------
+            return setResult(userRepo.save(user));
+        } else{
+            throw new RestExceptionUtil.ForbiddenException("Username is already registered");
+        }
     }
 
     @Override
@@ -29,7 +37,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
     public Map delete(String primary) {
         T_User user = setModel(
                 userRepo.findByStatusEnabledAndCode(true, primary));

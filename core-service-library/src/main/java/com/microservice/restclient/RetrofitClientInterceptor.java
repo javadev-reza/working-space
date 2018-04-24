@@ -16,7 +16,7 @@ import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
  * @author reza
  */
 public class RetrofitClientInterceptor {
-    
+
     public OkHttpClient authInterceptor(String authorization) {
         //----------------------------------------------------------------------
         OkHttpClient defaultHttpClient
@@ -100,7 +100,7 @@ public class RetrofitClientInterceptor {
                     okhttp3.Response response = chain.proceed(request);
 
                     if (response.code() == 500) {
-                        
+
                     }
                     if (response.code() == 500) {
 

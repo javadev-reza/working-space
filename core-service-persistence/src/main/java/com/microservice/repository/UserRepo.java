@@ -16,6 +16,5 @@ import java.util.List;
 public interface UserRepo extends JpaRepository<T_User, String>{
     T_User findByStatusEnabledAndUserName(Boolean statusEnabled, String userName);
     T_User findByStatusEnabledAndCode(Boolean statusEnabled, String code);
-    List<T_User> findByStatusEnabledAndRoleCode(Boolean statusEnabled, String roleCode);
     Page<T_User> findByStatusEnabledAndUserNameIgnoreCaseContaining(Pageable pageable, Boolean statusEnabled, String userName);
 }

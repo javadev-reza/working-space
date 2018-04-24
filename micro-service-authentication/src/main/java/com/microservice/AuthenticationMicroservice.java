@@ -1,14 +1,10 @@
 package com.microservice;
 
 import static com.microservice.constanta.WebConstant.DeclareVariable.CONTROLLER_PATCH;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.catalina.core.AprLifecycleListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
@@ -35,20 +31,6 @@ public class AuthenticationMicroservice {
 
     public static void main(String[] args) {
         SpringApplication.run(AuthenticationMicroservice.class, args);
-    }
-
-    @Value("${com.tomcat.apr:false}")
-    private boolean enableApr;
-
-    @Bean
-    public TomcatEmbeddedServletContainerFactory tomcatEmbeddedServletContainerFactory() {
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
-        if (enableApr) {
-            tomcat.setProtocol("org.apache.coyote.http11.Http11AprProtocol");
-            tomcat.addContextLifecycleListeners(new AprLifecycleListener());
-            tomcat.setAddress(new InetSocketAddress(0).getAddress());
-        }
-        return tomcat;
     }
 
     @Bean
